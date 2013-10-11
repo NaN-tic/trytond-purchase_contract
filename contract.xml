@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<tryton>
+    <data>
+        <record model="ir.ui.view" id="contract_view_form">
+            <field name="model">purchase.contract</field>
+            <field name="type">form</field>
+            <field name="name">contract_form</field>
+        </record>
+        <record model="ir.ui.view" id="contract_view_tree">
+            <field name="model">purchase.contract</field>
+            <field name="type">tree</field>
+            <field name="name">contract_tree</field>
+        </record>
+
+        <record model="ir.ui.view" id="contract_line_view_form">
+            <field name="model">purchase.contract.line</field>
+            <field name="type">form</field>
+            <field name="name">contract_line_form</field>
+        </record>
+
+        <record model="ir.ui.view" id="contract_line_view_tree">
+            <field name="model">purchase.contract.line</field>
+            <field name="type">tree</field>
+            <field name="name">contract_line_tree</field>
+        </record>
+
+        <record model="ir.ui.view" id="purchase_line_view_form">
+            <field name="model">purchase.line</field>
+            <field name="type">form</field>
+            <field name="inherit" ref="purchase.purchase_line_view_form"/>
+            <field name="name">purchase_line_form</field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_purchase_contract">
+            <field name="name">Contracts</field>
+            <field name="res_model">purchase.contract</field>
+            <field name="search_value"></field>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_purchase_contract_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="contract_view_tree"/>
+            <field name="act_window" ref="act_purchase_contract"/>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_purchase_contract_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="contract_view_form"/>
+            <field name="act_window" ref="act_purchase_contract"/>
+        </record>
+
+        <menuitem parent="purchase.menu_purchase" action="act_purchase_contract"
+            id="menu_purchase_contracts" sequence="10"/>
+
+        <!-- Permissions -->
+        <record model="res.group" id="group_purchase_contract_admin">
+            <field name="name">Purchase Contract Administration</field>
+        </record>
+
+        <record model="res.user-res.group" id="user_admin_group_purchase_contract_admin">
+            <field name="user" ref="res.user_admin"/>
+            <field name="group" ref="group_purchase_contract_admin"/>
+        </record>
+
+        <record model="ir.ui.menu-res.group" id="menu_purchase_group_purchase">
+            <field name="menu" ref="menu_purchase_contracts"/>
+            <field name="group" ref="group_purchase_contract_admin"/>
+        </record>
+
+
+        <record model="ir.model.access" id="access_purchase_contract">
+            <field name="model" search="[('model', '=', 'purchase.contract')]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+
+        <record model="ir.model.access" id="access_purchase_contract_admin">
+            <field name="model" search="[('model', '=', 'purchase.contract')]"/>
+            <field name="group" ref="group_purchase_contract_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <record model="ir.model.access" id="access_purchase_contract_line">
+            <field name="model" search="[('model', '=', 'purchase.contract.line')]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+
+        <record model="ir.model.access" id="access_purchase_contract_line_admin">
+            <field name="model" search="[('model', '=', 'purchase.contract.line')]"/>
+            <field name="group" ref="group_purchase_contract_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+    </data>
+</tryton>

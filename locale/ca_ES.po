@@ -1,0 +1,167 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:purchase.contract,create_date:"
+msgid "Create Date"
+msgstr "Data creació"
+
+msgctxt "field:purchase.contract,create_uid:"
+msgid "Create User"
+msgstr "Usuari creació"
+
+msgctxt "field:purchase.contract,end_date:"
+msgid "End Date"
+msgstr "Data final"
+
+msgctxt "field:purchase.contract,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:purchase.contract,lines:"
+msgid "Lines"
+msgstr "Línies"
+
+msgctxt "field:purchase.contract,party:"
+msgid "Supplier"
+msgstr "Proveïdor"
+
+msgctxt "field:purchase.contract,purchase_type:"
+msgid "Type"
+msgstr "Tipus"
+
+msgctxt "field:purchase.contract,rec_name:"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "field:purchase.contract,start_date:"
+msgid "Start Date"
+msgstr "Data inicial"
+
+msgctxt "field:purchase.contract,state:"
+msgid "State"
+msgstr "Estat"
+
+msgctxt "field:purchase.contract,write_date:"
+msgid "Write Date"
+msgstr "Data modificació"
+
+msgctxt "field:purchase.contract,write_uid:"
+msgid "Write User"
+msgstr "Usuari modificació"
+
+msgctxt "field:purchase.contract.line,agreed_quantity:"
+msgid "Agreed Quantity"
+msgstr "Quantitat pactada"
+
+msgctxt "field:purchase.contract.line,consumed_quantity:"
+msgid "Consumed Quantity"
+msgstr "Quantitat consumida"
+
+msgctxt "field:purchase.contract.line,contract:"
+msgid "Contract"
+msgstr "Contracte"
+
+msgctxt "field:purchase.contract.line,create_date:"
+msgid "Create Date"
+msgstr "Data creació"
+
+msgctxt "field:purchase.contract.line,create_uid:"
+msgid "Create User"
+msgstr "Usuari creació"
+
+msgctxt "field:purchase.contract.line,destination_quantity:"
+msgid "Destination Quantity"
+msgstr "Quantitat destí"
+
+msgctxt "field:purchase.contract.line,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:purchase.contract.line,lines:"
+msgid "Lines"
+msgstr "Línies"
+
+msgctxt "field:purchase.contract.line,origin_quantity:"
+msgid "Origin Quantity"
+msgstr "Quantitat Origen"
+
+msgctxt "field:purchase.contract.line,product:"
+msgid "Product"
+msgstr "Productes"
+
+msgctxt "field:purchase.contract.line,rec_name:"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "field:purchase.contract.line,unit:"
+msgid "Unit"
+msgstr "Unitat"
+
+msgctxt "field:purchase.contract.line,unit_digits:"
+msgid "Unit Digits"
+msgstr "Dígits de la unitat"
+
+msgctxt "field:purchase.contract.line,write_date:"
+msgid "Write Date"
+msgstr "Data modificació"
+
+msgctxt "field:purchase.contract.line,write_uid:"
+msgid "Write User"
+msgstr "Usuari modificació"
+
+msgctxt "field:purchase.line,contract:"
+msgid "Contract"
+msgstr "Contracte"
+
+msgctxt "field:purchase.line,contract_line:"
+msgid "Contract Line"
+msgstr "Línia de contracte"
+
+msgctxt "model:ir.action,name:act_purchase_contract"
+msgid "Contracts"
+msgstr "Contractes"
+
+msgctxt "model:ir.action.act_window,name:act_purchase_contract"
+msgid "Contracts"
+msgstr "Contractes"
+
+msgctxt "model:ir.ui.menu,name:menu_purchase_contracts"
+msgid "Contracts"
+msgstr "Contractes"
+
+msgctxt "model:purchase.contract,name:"
+msgid "Purchase Contract"
+msgstr "Contracte de compra"
+
+msgctxt "model:purchase.contract.line,name:"
+msgid "Purchase Contract Line"
+msgstr "Línia de contracte de compra"
+
+msgctxt "model:res.group,name:group_purchase_contract_admin"
+msgid "Purchase Contract Administrator"
+msgstr "Administració de contractes de compra"
+
+msgctxt "selection:purchase.contract,purchase_type:"
+msgid "Destination"
+msgstr "Destí"
+
+msgctxt "selection:purchase.contract,purchase_type:"
+msgid "Origin - Destination's Price"
+msgstr "Origen - Preu Destí"
+
+msgctxt "selection:purchase.contract,purchase_type:"
+msgid "Origin - Origin's Price"
+msgstr "Origen - Preu Origen"
+
+msgctxt "selection:purchase.contract,state:"
+msgid "Active"
+msgstr "Actiu"
+
+msgctxt "selection:purchase.contract,state:"
+msgid "Canceled"
+msgstr "Cancel·lat"
+
+msgctxt "selection:purchase.contract,state:"
+msgid "Draft"
+msgstr "Esborrany"
