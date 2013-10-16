@@ -2,6 +2,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "error:purchase.contract.line:"
+msgid "unique_product"
+msgstr "El producte ha de ser únic per contracte"
+
 msgctxt "field:purchase.contract,create_date:"
 msgid "Create Date"
 msgstr "Data creació"

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- The COPYRIGHT file at the top level of this repository contains the full
      copyright notices and license terms. -->
-<form string="Contract" col="4">
+<form string="Contract">
     <label name="party"/>
     <field name="party"/>
     <label name="purchase_type"/>
@@ -11,8 +11,10 @@
     <label name="end_date"/>
     <field name="end_date"/>
     <field name="lines" colspan="4"/>
-    <label name="state"/>
-    <field name="state"/>
-    <button name="active" string="Active" icon="tryton-go-next"/>
-    <button name="cancel" string="Cancel" icon="tryton-cancel"/>
+    <group id="buttons" colspan="4">
+        <label name="state"/>
+        <field name="state"/>
+        <button name="active" string="Active" icon="tryton-go-next"/>
+        <button name="cancel" string="Cancel" icon="tryton-cancel"/>
+    </group>
 </form>

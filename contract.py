@@ -2,10 +2,9 @@
 #copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL, Workflow, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, Bool
+from trytond.pyson import Eval, Bool, Not
 
 __all__ = ['PurchaseLine', 'PurchaseContract', 'PurchaseContractLine']
-
 __metaclass__ = PoolMeta
 
 
@@ -14,30 +13,37 @@ class PurchaseLine():
     __name__ = 'purchase.line'
 
     contract = fields.Function(fields.Many2One('purchase.contract', 'Contract',
-            states={'readonly': Bool(~Eval('product'))},
-            domain=[('state', '=', 'active'),
+            states={
+                'readonly': Not(Bool(Eval('product')))
+                },
+            domain=[
+                ('state', '=', 'active'),
+                ('lines.product', '=', Eval('product')),
                 ('party', '=', Eval('_parent_purchase', {}).get('party')),
             ], depends=['product']), 'get_contract',
         setter='set_contract')
     contract_line = fields.Many2One('purchase.contract.line', 'Contract Line')
 
     def get_contract(self, name=None):
-        if not self.contract_line:
-            return None
-        return self.contract_line.contract
+        if self.contract_line and self.contract_line.contract:
+            return self.contract_line.contract.id
 
     @classmethod
     def set_contract(cls, lines, name, value):
         if not value:
             return
         ContractLines = Pool().get('purchase.contract.line')
-        purchase_line = lines[0]
-        if purchase_line.product:
-            line, = ContractLines.search([('contract', '=', value),
-                    ('product', '=', purchase_line.product)])
-            cls.write(lines, {
-                'contract_line': line,
-                })
+        for purchase_line in lines:
+            if purchase_line.product:
+                lines = ContractLines.search([
+                            ('contract', '=', value),
+                            ('product', '=', purchase_line.product),
+                        ])
+                if len(lines) > 0:
+                    line = lines[0]
+                    cls.write([purchase_line], {
+                        'contract_line': line,
+                        })
 
     def on_change_product(self):
         ContractLines = Pool().get('purchase.contract.line')
@@ -46,7 +52,7 @@ class PurchaseLine():
             lines = ContractLines.search([
                 ('contract.party', '=', self.purchase.party),
                 ('product', '=', self.product)])
-            if len(lines) == 1:
+            if len(lines) >= 0:
                 res['contract'] = lines[0].contract.id
         return res
 
@@ -172,6 +178,14 @@ class PurchaseContractLine(ModelSQL, ModelView):
         depends=['unit_digits']), 'get_consumed_quantity')
 
     @classmethod
+    def __setup__(cls):
+        super(PurchaseContractLine, cls).__setup__()
+        cls._sql_constraints += [
+            ('contract_product_uniq', 'unique (contract,product)',
+                'unique_product')
+            ]
+
+    @classmethod
     def copy(cls, lines, default=None):
         if default is None:
             default = {}
@@ -191,7 +205,15 @@ class PurchaseContractLine(ModelSQL, ModelView):
         return 2
 
     def get_consumed_quantity(self, name=None):
+        pool = Pool()
+        Uom = pool.get('product.uom')
         if not self.lines:
             return 0.0
-        return sum([l.quantity for l in self.lines
-                if l.purchase.state in ['confirmed', 'done']])
+        values = [(l.quantity, l.unit, l.product.template.default_uom)
+                for l in self.lines if l.purchase.state in
+                ['confirmed', 'done']
+            ]
+        quantity = 0.0
+        for qty, from_uom, to_uom in values:
+            quantity += Uom.compute_qty(from_uom, qty, to_uom=to_uom)
+        return quantity

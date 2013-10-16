@@ -2,6 +2,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "error:purchase.contract.line:"
+msgid "unique_product"
+msgstr ""
+
 msgctxt "field:purchase.contract,create_date:"
 msgid "Create Date"
 msgstr "Fecha de creación"
@@ -118,9 +122,10 @@ msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
 msgstr "Linea contrato"
 
+#, fuzzy
 msgctxt "model:ir.action,name:act_purchase_contract"
 msgid "Contracts"
-msgstr "Contractos"
+msgstr "Contratos"
 
 msgctxt "model:ir.action.act_window,name:act_purchase_contract"
 msgid "Contracts"
