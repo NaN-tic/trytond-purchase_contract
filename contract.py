@@ -56,6 +56,34 @@ class PurchaseLine():
                 res['contract'] = lines[0].contract.id
         return res
 
+    def get_invoice_line(self, invoice_type):
+        pool = Pool()
+        Uom = pool.get('product.uom')
+        lines = super(PurchaseLine, self).get_invoice_line(invoice_type)
+        if len(lines) != 1:
+            return lines
+        line, = lines
+        contract = self.contract
+        if (contract and contract.purchase_type == 'origin_price_origin' and
+                self.purchase.invoice_method == 'shipment' and self.product
+                and self.product.type != 'service'):
+            quantity = 0.0
+            for move in self.moves:
+                if move.state == 'done':
+                    quantity += Uom.compute_qty(move.origin_uom,
+                        move.origin_quantity, self.unit)
+            skip_ids = set(l.id for i in self.purchase.invoices_recreated
+                for l in i.lines)
+            for old_invoice_line in self.invoice_lines:
+                if old_invoice_line.type != 'line':
+                    continue
+                if old_invoice_line.id not in skip_ids:
+                    quantity -= Uom.compute_qty(old_invoice_line.unit,
+                            old_invoice_line.quantity, self.unit)
+            line.quantity = quantity
+
+        return [line]
+
 _STATES = {
     'readonly': Eval('state') != 'draft',
 }
