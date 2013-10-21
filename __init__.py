@@ -4,6 +4,7 @@
 from trytond.pool import Pool
 
 from .contract import *
+from .move import *
 
 
 def register():
@@ -11,4 +12,5 @@ def register():
         PurchaseContract,
         PurchaseContractLine,
         PurchaseLine,
+        Move,
         module='purchase_contract', type_='model')

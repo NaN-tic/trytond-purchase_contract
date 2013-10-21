@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -122,7 +122,18 @@ msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
 msgstr "Linea contrato"
 
-#, fuzzy
+msgctxt "field:stock.move,origin_quantity:"
+msgid "Origin Quantity"
+msgstr "Cantidad origen"
+
+msgctxt "field:stock.move,origin_unit_digits:"
+msgid "Origin Unit Digits"
+msgstr "Digitos unidad origen"
+
+msgctxt "field:stock.move,origin_uom:"
+msgid "Origin Uom"
+msgstr "UdM Origen"
+
 msgctxt "model:ir.action,name:act_purchase_contract"
 msgid "Contracts"
 msgstr "Contratos"
@@ -170,3 +181,35 @@ msgstr "Cancelado"
 msgctxt "selection:purchase.contract,state:"
 msgid "Draft"
 msgstr "Borrador"
+
+msgctxt "view:purchase.contract.line:"
+msgid "Contract Line"
+msgstr "Linea contrato"
+
+msgctxt "view:purchase.contract.line:"
+msgid "General"
+msgstr "General"
+
+msgctxt "view:purchase.contract.line:"
+msgid "Moves"
+msgstr "Movimientos"
+
+msgctxt "view:purchase.contract.line:"
+msgid "Purchase Contract"
+msgstr "Contrato de Compra"
+
+msgctxt "view:purchase.contract:"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "view:purchase.contract:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "view:purchase.contract:"
+msgid "Contract"
+msgstr "Contrato"
+
+msgctxt "view:purchase.contract:"
+msgid "Purchase Contract"
+msgstr "Contrato de Compra"
