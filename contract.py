@@ -64,7 +64,7 @@ class PurchaseLine():
             return lines
         line, = lines
         contract = self.contract
-        if (contract and contract.purchase_type == 'origin_price_origin' and
+        if (contract and contract.invoice_type == 'origin' and
                 self.purchase.invoice_method == 'shipment' and self.product
                 and self.product.type != 'service'):
             quantity = 0.0
@@ -102,11 +102,16 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
     ], 'State', readonly=True, required=True)
     party = fields.Many2One('party.party', 'Supplier', required=True,
         states=_STATES, depends=_DEPENDS)
-    purchase_type = fields.Selection([
-            ('origin_price_origin', 'Origin - Origin\'s Price'),
-            ('origin_price_destination', 'Origin - Destination\'s Price'),
+    contract_type = fields.Selection([
+            ('origin', 'Origin'),
             ('destination', 'Destination'),
-            ], 'Type', required=True, states=_STATES, depends=_DEPENDS)
+            ], 'Contract quantity', required=True, states=_STATES,
+        depends=_DEPENDS, help='Quantity used to calculate consumed quantity')
+    invoice_type = fields.Selection([
+            ('origin', 'Origin'),
+            ('destination', 'Destination'),
+            ], 'Quantity to invoice', required=True, states=_STATES,
+        depends=_DEPENDS, help='Quantity used to create invoices')
     start_date = fields.Date('Start Date', states=_STATES, depends=_DEPENDS)
     end_date = fields.Date('End Date', states=_STATES, depends=_DEPENDS)
     lines = fields.One2Many('purchase.contract.line', 'contract', 'Lines',
@@ -155,6 +160,14 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
     def default_state():
         return 'draft'
 
+    @staticmethod
+    def default_contract_type():
+        return 'destination'
+
+    @staticmethod
+    def default_invoice_type():
+        return 'destination'
+
     def get_rec_name(self, name):
         ret = self.party.rec_name
         if self.start_date:
@@ -193,14 +206,16 @@ class PurchaseContractLine(ModelSQL, ModelView):
     agreed_quantity = fields.Float('Agreed Quantity',
         digits=(16, Eval('unit_digits', 2)),
         depends=['unit_digits'])
-    origin_quantity = fields.Float('Origin Quantity',
+    origin_quantity = fields.Function(fields.Float('Origin Quantity',
         digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits'])
-    destination_quantity = fields.Float('Destination Quantity',
+        depends=['unit_digits']), 'get_origin_quantity')
+    destination_quantity = fields.Function(fields.Float('Destination Quantity',
         digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits'])
+        depends=['unit_digits']), 'get_destination_quantity')
     lines = fields.One2Many('purchase.line', 'contract_line',
         'Lines', readonly=True)
+    moves = fields.Function(fields.One2Many('stock.move', None, 'Moves',
+            readonly=True), 'get_moves')
     consumed_quantity = fields.Function(fields.Float('Consumed Quantity',
         digits=(16, Eval('unit_digits', 2)),
         depends=['unit_digits']), 'get_consumed_quantity')
@@ -232,7 +247,14 @@ class PurchaseContractLine(ModelSQL, ModelView):
             return self.unit.digits
         return 2
 
-    def get_consumed_quantity(self, name=None):
+    def get_moves(self, name):
+        moves = []
+        for line in self.lines:
+            if line.purchase.state in ['confirmed', 'done']:
+                moves.extend([x.id for x in line.moves])
+        return moves
+
+    def get_destination_quantity(self, name=None):
         pool = Pool()
         Uom = pool.get('product.uom')
         if not self.lines:
@@ -245,3 +267,20 @@ class PurchaseContractLine(ModelSQL, ModelView):
         for qty, from_uom, to_uom in values:
             quantity += Uom.compute_qty(from_uom, qty, to_uom=to_uom)
         return quantity
+
+    def get_origin_quantity(self, name=None):
+        pool = Pool()
+        Uom = pool.get('product.uom')
+        if not self.moves:
+            return 0.0
+
+        values = [(l.origin_quantity or l.quantity, l.origin_uom or l.uom,
+                l.product.default_uom) for l in self.moves
+                  ]
+        quantity = 0.0
+        for qty, from_uom, to_uom in values:
+            quantity += Uom.compute_qty(from_uom, qty, to_uom=to_uom)
+        return quantity
+
+    def get_consumed_quantity(self, name):
+        return getattr(self, "%s_quantity" % self.contract.contract_type)

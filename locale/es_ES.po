@@ -1,10 +1,14 @@
-#
+# 
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:purchase.contract.line:"
 msgid "unique_product"
-msgstr ""
+msgstr "unico_producto"
+
+msgctxt "field:purchase.contract,contract_type:"
+msgid "Contract quantity"
+msgstr "Cantidad del contrato"
 
 msgctxt "field:purchase.contract,create_date:"
 msgid "Create Date"
@@ -22,6 +26,10 @@ msgctxt "field:purchase.contract,id:"
 msgid "ID"
 msgstr "ID"
 
+msgctxt "field:purchase.contract,invoice_type:"
+msgid "Quantity to invoice"
+msgstr "Cantidad a facturar"
+
 msgctxt "field:purchase.contract,lines:"
 msgid "Lines"
 msgstr "Líneas"
@@ -29,10 +37,6 @@ msgstr "Líneas"
 msgctxt "field:purchase.contract,party:"
 msgid "Supplier"
 msgstr "Proveedor"
-
-msgctxt "field:purchase.contract,purchase_type:"
-msgid "Type"
-msgstr "Tipo"
 
 msgctxt "field:purchase.contract,rec_name:"
 msgid "Name"
@@ -86,6 +90,10 @@ msgctxt "field:purchase.contract.line,lines:"
 msgid "Lines"
 msgstr "Líneas"
 
+msgctxt "field:purchase.contract.line,moves:"
+msgid "Moves"
+msgstr "Movimientos"
+
 msgctxt "field:purchase.contract.line,origin_quantity:"
 msgid "Origin Quantity"
 msgstr "Cantidad origen"
@@ -134,6 +142,14 @@ msgctxt "field:stock.move,origin_uom:"
 msgid "Origin Uom"
 msgstr "UdM Origen"
 
+msgctxt "help:purchase.contract,contract_type:"
+msgid "Quantity used to calculate consumed quantity"
+msgstr "Cantidad utilizada para calcular la cantidad consumida del contrato"
+
+msgctxt "help:purchase.contract,invoice_type:"
+msgid "Quantity used to create invoices"
+msgstr "Cantidad utilizada cuando se crean las facturas"
+
 msgctxt "model:ir.action,name:act_purchase_contract"
 msgid "Contracts"
 msgstr "Contratos"
@@ -158,17 +174,21 @@ msgctxt "model:res.group,name:group_purchase_contract_admin"
 msgid "Purchase Contract Administrator"
 msgstr "Administración de Contratos de Compra"
 
-msgctxt "selection:purchase.contract,purchase_type:"
+msgctxt "selection:purchase.contract,contract_type:"
 msgid "Destination"
 msgstr "Destino"
 
-msgctxt "selection:purchase.contract,purchase_type:"
-msgid "Origin - Destination's Price"
-msgstr "Origen - Precio en Destino"
+msgctxt "selection:purchase.contract,contract_type:"
+msgid "Origin"
+msgstr "Origen"
 
-msgctxt "selection:purchase.contract,purchase_type:"
-msgid "Origin - Origin's Price"
-msgstr "Origen - Precio en Origen"
+msgctxt "selection:purchase.contract,invoice_type:"
+msgid "Destination"
+msgstr "Destino"
+
+msgctxt "selection:purchase.contract,invoice_type:"
+msgid "Origin"
+msgstr "Origen"
 
 msgctxt "selection:purchase.contract,state:"
 msgid "Active"
@@ -195,8 +215,8 @@ msgid "Moves"
 msgstr "Movimientos"
 
 msgctxt "view:purchase.contract.line:"
-msgid "Purchase Contract"
-msgstr "Contrato de Compra"
+msgid "Purchase Contract Line"
+msgstr "Linia de Contracto de Compra"
 
 msgctxt "view:purchase.contract:"
 msgid "Active"

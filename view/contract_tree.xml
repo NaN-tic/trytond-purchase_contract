@@ -3,7 +3,8 @@
      copyright notices and license terms. -->
 <tree string="Purchase Contract">
     <field name="party"/>
-    <field name="purchase_type"/>
+    <field name="contract_type"/>
+    <field name="invoice_type"/>
     <field name="state"/>
     <field name="start_date"/>
     <field name="end_date"/>

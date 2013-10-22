@@ -154,9 +154,11 @@ Create purchase contract::
     >>> contract = Contract()
     >>> contract.party = supplier
     >>> contract.party = supplier
-    >>> contract.purchase_type = 'origin_price_origin'
+    >>> contract.contract_type = 'destination'
+    >>> contract.invoice_type = 'origin'
     >>> contract_line = ContractLine()
     >>> contract.lines.append(contract_line)
+    >>> contract_line.product = product
     >>> contract_line.product = product
     >>> contract.save()
     >>> contract.reload()
@@ -280,6 +282,14 @@ Open supplier invoice::
     >>> for line in invoice.lines:
     ...     line.quantity == 2.0
     True
+    True
+    >>> contract.reload()
+    >>> line, = contract.lines
+    >>> line.consumed_quantity == 10.0
+    True
+    >>> line.origin_quantity == 9.0
+    True
+    >>> line.destination_quantity == 10.0
     True
 
 Purchase in diferent uom::
