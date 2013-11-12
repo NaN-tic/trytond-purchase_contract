@@ -51,8 +51,10 @@ class PurchaseLine():
         if self.purchase and self.purchase.party and self.product is not None:
             lines = ContractLines.search([
                 ('contract.party', '=', self.purchase.party),
-                ('product', '=', self.product)])
-            if len(lines) >= 0:
+                ('product', '=', self.product),
+                ('contract.state', '=', 'active'),
+                ], limit=1)
+            if lines:
                 res['contract'] = lines[0].contract.id
         return res
 
