@@ -24,6 +24,28 @@ class PurchaseLine():
         setter='set_contract')
     contract_line = fields.Many2One('purchase.contract.line', 'Contract Line')
 
+    @classmethod
+    def __setup__(cls):
+        super(PurchaseLine, cls).__setup__()
+        cls._error_messages.update({
+                'invalid_invoice_method': ('The Purchase "%s" has some line '
+                    'associated to a Purchase Contract but its Invoice Method '
+                    'is not "Based On Shipment".'),
+                })
+
+    @classmethod
+    def validate(cls, lines):
+        super(PurchaseLine, cls).validate(lines)
+        cls.check_invoice_method_with_contract(lines)
+
+    @classmethod
+    def check_invoice_method_with_contract(cls, lines):
+        for line in lines:
+            if (line.contract_line
+                    and line.purchase.invoice_method != 'shipment'):
+                cls.raise_user_error('invalid_invoice_method',
+                    line.purchase.rec_name)
+
     def get_contract(self, name=None):
         if self.contract_line and self.contract_line.contract:
             return self.contract_line.contract.id
@@ -133,7 +155,7 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
                 'cancel': {
                     'invisible': Eval('state') != 'active',
                     },
-                 })
+                })
 
     @classmethod
     def copy(cls, contracts, default=None):
@@ -202,25 +224,27 @@ class PurchaseContractLine(ModelSQL, ModelView):
     product = fields.Many2One('product.product', 'Product', required=True,
         domain=[('purchasable', '=', True)])
     unit = fields.Function(fields.Many2One('product.uom', 'Unit',
-        on_change_with=['product']), 'on_change_with_unit')
+            on_change_with=['product']),
+        'on_change_with_unit')
     unit_digits = fields.Function(fields.Integer('Unit Digits',
-            on_change_with=['unit']), 'on_change_with_unit_digits')
+            on_change_with=['unit']),
+        'on_change_with_unit_digits')
     agreed_quantity = fields.Float('Agreed Quantity',
-        digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits'])
-    origin_quantity = fields.Function(fields.Float('Origin Quantity',
-        digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits']), 'get_origin_quantity')
-    destination_quantity = fields.Function(fields.Float('Destination Quantity',
-        digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits']), 'get_destination_quantity')
+        digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
     lines = fields.One2Many('purchase.line', 'contract_line',
         'Lines', readonly=True)
     moves = fields.Function(fields.One2Many('stock.move', None, 'Moves',
-            readonly=True), 'get_moves')
+            readonly=True),
+        'get_moves')
+    origin_quantity = fields.Function(fields.Float('Origin Quantity',
+            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits']),
+        'get_quantities')
+    destination_quantity = fields.Function(fields.Float('Destination Quantity',
+            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits']),
+        'get_quantities')
     consumed_quantity = fields.Function(fields.Float('Consumed Quantity',
-        digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits']), 'get_consumed_quantity')
+            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits']),
+        'get_quantities')
 
     @classmethod
     def __setup__(cls):
@@ -253,36 +277,32 @@ class PurchaseContractLine(ModelSQL, ModelView):
         moves = []
         for line in self.lines:
             if line.purchase.state in ['confirmed', 'done']:
-                moves.extend([x.id for x in line.moves])
+                moves.extend([m.id for m in line.moves if m.state != 'cancel'])
         return moves
 
-    def get_destination_quantity(self, name=None):
+    @classmethod
+    def get_quantities(cls, lines, names):
         pool = Pool()
         Uom = pool.get('product.uom')
-        if not self.lines:
-            return 0.0
-        values = [(l.quantity, l.unit, l.product.template.default_uom)
-                for l in self.lines if l.purchase.state in
-                ['confirmed', 'done']
-            ]
-        quantity = 0.0
-        for qty, from_uom, to_uom in values:
-            quantity += Uom.compute_qty(from_uom, qty, to_uom=to_uom)
-        return quantity
 
-    def get_origin_quantity(self, name=None):
-        pool = Pool()
-        Uom = pool.get('product.uom')
-        if not self.moves:
-            return 0.0
+        res = {}
+        line_ids = [l.id for l in lines]
+        for name in names:
+            res[name] = {}.fromkeys(line_ids, 0.0)
 
-        values = [(l.origin_quantity or l.quantity, l.origin_uom or l.uom,
-                l.product.default_uom) for l in self.moves
-                  ]
-        quantity = 0.0
-        for qty, from_uom, to_uom in values:
-            quantity += Uom.compute_qty(from_uom, qty, to_uom=to_uom)
-        return quantity
-
-    def get_consumed_quantity(self, name):
-        return getattr(self, "%s_quantity" % self.contract.contract_type)
+        for line in lines:
+            origin = destination = 0.0
+            for move in line.moves:
+                origin += Uom.compute_qty(move.origin_uom,
+                    move.origin_quantity, to_uom=move.product.default_uom)
+                destination += move.internal_quantity
+            if 'origin_quantity' in names:
+                res['origin_quantity'][line.id] = origin
+            if 'destination_quantity' in names:
+                res['destination_quantity'][line.id] = destination
+            if 'consumed_quantity' in names:
+                if line.contract.contract_type == 'origin':
+                    res['consumed_quantity'][line.id] = origin
+                else:
+                    res['consumed_quantity'][line.id] = destination
+        return res

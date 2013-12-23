@@ -1,27 +1,38 @@
 #The COPYRIGHT file at the top level of this repository contains the full
 #copyright notices and license terms.
 from trytond.model import fields
-from trytond.pool import PoolMeta
-from trytond.pyson import Eval
+from trytond.pool import Pool, PoolMeta
+from trytond.pyson import And, Eval
 from trytond.modules.stock.move import STATES
 
 __all__ = ['Move']
 __metaclass__ = PoolMeta
 
+ORIGIN_STATES = STATES.copy()
+ORIGIN_STATES.update({
+        'required': And(Eval('state', '') == 'done',
+            Eval('origin_quantity_required', False)),
+        'invisible': ~Eval('origin_quantity_required', False),
+        })
+
 
 class Move():
     __name__ = 'stock.move'
 
-    origin_uom = fields.Many2One("product.uom", "Origin Uom", states=STATES,
-        domain=[
+    origin_quantity_required = fields.Function(
+        fields.Boolean('Origin Quantity Required'),
+        'get_origin_quantity_required')
+    origin_uom = fields.Many2One("product.uom", "Origin Uom", domain=[
             ('category', '=', Eval('product_uom_category')),
-            ],
-        depends=['state', 'product_uom_category'])
+            ], states=ORIGIN_STATES,
+        depends=['product_uom_category', 'state', 'origin_quantity_required'])
     origin_unit_digits = fields.Function(fields.Integer('Origin Unit Digits',
-        on_change_with=['origin_uom']), 'on_change_with_origin_unit_digits')
-    origin_quantity = fields.Float("Origin Quantity", states=STATES,
+            on_change_with=['origin_uom']),
+        'on_change_with_origin_unit_digits')
+    origin_quantity = fields.Float("Origin Quantity",
         digits=(16, Eval('origin_unit_digits', 2)),
-        depends=['state', 'origin_unit_digits'])
+        states=ORIGIN_STATES,
+        depends=['origin_unit_digits', 'state', 'origin_quantity_required'])
 
     @classmethod
     def __setup__(cls):
@@ -30,6 +41,11 @@ class Move():
             cls.quantity.on_change = []
         if not 'quantity' in cls.quantity.on_change:
             cls.quantity.on_change.append('quantity')
+
+    def get_origin_quantity_required(self, name):
+        PurchaseLine = Pool().get('purchase.line')
+        return (self.origin and isinstance(self.origin, PurchaseLine)
+            and self.origin.contract_line and True or False)
 
     def on_change_with_origin_unit_digits(self, name=None):
         if self.origin_uom:
