@@ -277,7 +277,8 @@ class PurchaseContractLine(ModelSQL, ModelView):
         moves = []
         for line in self.lines:
             if line.purchase.state in ['confirmed', 'done']:
-                moves.extend([m.id for m in line.moves if m.state != 'cancel'])
+                moves.extend([m.id for m in line.moves
+                        if m.state not in ('draft' 'cancel')])
         return moves
 
     @classmethod
