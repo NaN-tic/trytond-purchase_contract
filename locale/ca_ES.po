@@ -6,6 +6,12 @@ msgctxt "error:purchase.contract.line:"
 msgid "unique_product"
 msgstr "El producte ha de ser únic per contracte"
 
+msgctxt "error:purchase.line:"
+msgid ""
+"The Purchase \"%s\" has some line associated to a Purchase Contract but its "
+"Invoice Method is not \"Based On Shipment\"."
+msgstr ""
+
 msgctxt "field:purchase.contract,contract_type:"
 msgid "Contract quantity"
 msgstr "Quantitat del contracte"
@@ -172,7 +178,7 @@ msgid "Purchase Contract Line"
 msgstr "Línia de contracte de compra"
 
 msgctxt "model:res.group,name:group_purchase_contract_admin"
-msgid "Purchase Contract Administrator"
+msgid "Purchase Contract Administration"
 msgstr "Administració de contractes de compra"
 
 msgctxt "selection:purchase.contract,contract_type:"

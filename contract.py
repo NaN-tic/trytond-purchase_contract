@@ -2,7 +2,7 @@
 #copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL, Workflow, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, Bool, Not
+from trytond.pyson import Bool, Date, Eval, Not
 
 __all__ = ['PurchaseLine', 'PurchaseContract', 'PurchaseContractLine']
 __metaclass__ = PoolMeta
@@ -20,6 +20,18 @@ class PurchaseLine():
                 ('state', '=', 'active'),
                 ('lines.product', '=', Eval('product')),
                 ('party', '=', Eval('_parent_purchase', {}).get('party')),
+                ['OR',
+                    ('start_date', '=', None),
+                    ('start_date', '<=',
+                        Eval('_parent_purchase', {}).get('purchase_date',
+                            Date())),
+                    ],
+                ['OR',
+                    ('end_date', '=', None),
+                    ('end_date', '>=',
+                        Eval('_parent_purchase', {}).get('purchase_date',
+                            Date())),
+                    ],
             ], depends=['product']), 'get_contract',
         setter='set_contract')
     contract_line = fields.Many2One('purchase.contract.line', 'Contract Line')
@@ -68,14 +80,27 @@ class PurchaseLine():
                         })
 
     def on_change_product(self):
-        ContractLines = Pool().get('purchase.contract.line')
+        pool = Pool()
+        ContractLines = pool.get('purchase.contract.line')
+        Date = pool.get('ir.date')
+
         res = super(PurchaseLine, self).on_change_product()
         if self.purchase and self.purchase.party and self.product is not None:
             lines = ContractLines.search([
-                ('contract.party', '=', self.purchase.party),
-                ('product', '=', self.product),
-                ('contract.state', '=', 'active'),
-                ], limit=1)
+                    ('contract.party', '=', self.purchase.party),
+                    ('product', '=', self.product),
+                    ('contract.state', '=', 'active'),
+                    ['OR',
+                        ('contract.start_date', '=', None),
+                        ('contract.start_date', '<=',
+                            self.purchase.purchase_date or Date.today()),
+                        ],
+                    ['OR',
+                        ('contract.end_date', '=', None),
+                        ('contract.end_date', '>=',
+                            self.purchase.purchase_date or Date.today()),
+                        ],
+                    ], limit=1)
             if lines:
                 res['contract'] = lines[0].contract.id
         return res

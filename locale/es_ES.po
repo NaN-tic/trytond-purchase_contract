@@ -6,6 +6,14 @@ msgctxt "error:purchase.contract.line:"
 msgid "unique_product"
 msgstr "unico_producto"
 
+msgctxt "error:purchase.line:"
+msgid ""
+"The Purchase \"%s\" has some line associated to a Purchase Contract but its "
+"Invoice Method is not \"Based On Shipment\"."
+msgstr ""
+"La compra \"%s\" tiene alguna línea asociada a un contrato de compra pero su"
+" tipo de facturación no es \"Basado en el envío\"."
+
 msgctxt "field:purchase.contract,contract_type:"
 msgid "Contract quantity"
 msgstr "Cantidad del contrato"
@@ -124,7 +132,7 @@ msgstr "Usuario modificación"
 
 msgctxt "field:purchase.line,contract:"
 msgid "Contract"
-msgstr "Contracto"
+msgstr "Contrato"
 
 msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
@@ -156,7 +164,7 @@ msgstr "Contratos"
 
 msgctxt "model:ir.action.act_window,name:act_purchase_contract"
 msgid "Contracts"
-msgstr "Contractos"
+msgstr "Contratos"
 
 msgctxt "model:ir.ui.menu,name:menu_purchase_contracts"
 msgid "Contracts"
@@ -164,15 +172,15 @@ msgstr "Contratos"
 
 msgctxt "model:purchase.contract,name:"
 msgid "Purchase Contract"
-msgstr "Contrato de Compra"
+msgstr "Contrato de compra"
 
 msgctxt "model:purchase.contract.line,name:"
 msgid "Purchase Contract Line"
-msgstr "Linia de Contracto de Compra"
+msgstr "Linia de contrato de compra"
 
 msgctxt "model:res.group,name:group_purchase_contract_admin"
-msgid "Purchase Contract Administrator"
-msgstr "Administración de Contratos de Compra"
+msgid "Purchase Contract Administration"
+msgstr "Administración de contratos de compra"
 
 msgctxt "selection:purchase.contract,contract_type:"
 msgid "Destination"
@@ -216,7 +224,7 @@ msgstr "Movimientos"
 
 msgctxt "view:purchase.contract.line:"
 msgid "Purchase Contract Line"
-msgstr "Linia de Contracto de Compra"
+msgstr "Linia de contrato de compra"
 
 msgctxt "view:purchase.contract:"
 msgid "Active"
@@ -232,4 +240,4 @@ msgstr "Contrato"
 
 msgctxt "view:purchase.contract:"
 msgid "Purchase Contract"
-msgstr "Contrato de Compra"
+msgstr "Contrato de compra"
