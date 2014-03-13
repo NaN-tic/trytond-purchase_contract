@@ -5,6 +5,7 @@
     <field name="contract"/>
     <field name="product"/>
     <field name="agreed_quantity"/>
+    <field name="agreed_unit_price"/>
     <field name="origin_quantity"/>
     <field name="destination_quantity"/>
     <field name="consumed_quantity"/>

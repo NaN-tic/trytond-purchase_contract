@@ -3,8 +3,8 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:purchase.contract.line:"
-msgid "unique_product"
-msgstr "unico_producto"
+msgid "There can not be two lines for the same product in a contract."
+msgstr "No puede haber dos líneas para el mismo producto en un contrato."
 
 msgctxt "error:purchase.line:"
 msgid ""
@@ -69,6 +69,10 @@ msgstr "Usuario modificación"
 msgctxt "field:purchase.contract.line,agreed_quantity:"
 msgid "Agreed Quantity"
 msgstr "Cantidad pactada"
+
+msgctxt "field:purchase.contract.line,agreed_unit_price:"
+msgid "Agreed Unit Price"
+msgstr "Precio unidad pactada"
 
 msgctxt "field:purchase.contract.line,consumed_quantity:"
 msgid "Consumed Quantity"
@@ -138,9 +142,17 @@ msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
 msgstr "Linea contrato"
 
+msgctxt "field:purchase.purchase,has_contract_lines:"
+msgid "Has Contract Lines?"
+msgstr "¿Tiene líneas con contrato?"
+
 msgctxt "field:stock.move,origin_quantity:"
 msgid "Origin Quantity"
 msgstr "Cantidad origen"
+
+msgctxt "field:stock.move,origin_quantity_required:"
+msgid ""
+msgstr ""
 
 msgctxt "field:stock.move,origin_unit_digits:"
 msgid "Origin Unit Digits"

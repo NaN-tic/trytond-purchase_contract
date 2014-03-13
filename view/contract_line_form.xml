@@ -8,8 +8,13 @@
         <page id="product" string="General">
             <label name="product"/>
             <field name="product"/>
+            <label name="unit"/>
+            <field name="unit"/>
             <label name="agreed_quantity"/>
             <field name="agreed_quantity"/>
+            <label name="agreed_unit_price"/>
+            <field name="agreed_unit_price"/>
+            <separator id="computed_fields" colspan="4"/>
             <label name="origin_quantity"/>
             <field name="origin_quantity"/>
             <label name="destination_quantity"/>

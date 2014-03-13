@@ -25,6 +25,8 @@ class Move():
     origin_uom = fields.Many2One("product.uom", "Origin Uom", domain=[
             ('category', '=', Eval('product_uom_category')),
             ], states=ORIGIN_STATES,
+        on_change_with=['origin_quantity_required', 'origin_quantity',
+            'product', 'uom'],
         depends=['product_uom_category', 'state', 'origin_quantity_required'])
     origin_unit_digits = fields.Function(fields.Integer('Origin Unit Digits',
             on_change_with=['origin_uom']),
@@ -46,6 +48,14 @@ class Move():
         PurchaseLine = Pool().get('purchase.line')
         return (self.origin and isinstance(self.origin, PurchaseLine)
             and self.origin.contract_line and True or False)
+
+    def on_change_with_origin_uom(self):
+        if not self.origin_quantity_required:
+            return None
+        if self.uom:
+            return self.uom.id
+        if self.product:
+            return self.product.default_uom.id
 
     def on_change_with_origin_unit_digits(self, name=None):
         if self.origin_uom:

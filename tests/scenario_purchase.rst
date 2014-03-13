@@ -169,59 +169,13 @@ Create purchase contract::
     >>> contract.state
     u'active'
 
-Purchase 5 products::
+Purchase 5 products with an invoice method 'on shipment'::
 
     >>> Purchase = Model.get('purchase.purchase')
     >>> PurchaseLine = Model.get('purchase.line')
     >>> purchase = Purchase()
     >>> purchase.party = supplier
-    >>> purchase.payment_term = payment_term
-    >>> purchase.invoice_method = 'order'
-    >>> purchase_line = PurchaseLine()
-    >>> purchase.lines.append(purchase_line)
-    >>> purchase_line.product = product
-    >>> purchase_line.quantity = 2.0
-    >>> purchase_line.contract = contract
-    >>> purchase_line = PurchaseLine()
-    >>> purchase.lines.append(purchase_line)
-    >>> purchase_line.type = 'comment'
-    >>> purchase_line.description = 'Comment'
-    >>> purchase_line = PurchaseLine()
-    >>> purchase.lines.append(purchase_line)
-    >>> purchase_line.product = product
-    >>> purchase_line.quantity = 3.0
-    >>> purchase_line.contract = contract
-    >>> purchase.save()
-    >>> Purchase.quote([purchase.id], config.context)
-    >>> Purchase.confirm([purchase.id], config.context)
-    >>> purchase.state
-    u'confirmed'
-    >>> purchase.reload()
-    >>> len(purchase.moves), len(purchase.shipment_returns), len(purchase.invoices)
-    (2, 0, 1)
-    >>> invoice, = purchase.invoices
-    >>> invoice.origins == purchase.rec_name
-    True
-    >>> contract.reload()
-    >>> line, = contract.lines
-    >>> line.consumed_quantity == 5.0
-    True
-
-
-Post invoice and check no new invoices::
-
-    >>> Invoice = Model.get('account.invoice')
-    >>> purchase.invoices[0].invoice_date = today
-    >>> purchase.invoices[0].save()
-    >>> Invoice.post([i.id for i in purchase.invoices], config.context)
-    >>> purchase.reload()
-    >>> len(purchase.moves), len(purchase.shipment_returns), len(purchase.invoices)
-    (2, 0, 1)
-
-Purchase 5 products with an invoice method 'on shipment'::
-
-    >>> purchase = Purchase()
-    >>> purchase.party = supplier
+    >>> purchase.purchase_date = today
     >>> purchase.payment_term = payment_term
     >>> purchase.invoice_method = 'shipment'
     >>> purchase_line = PurchaseLine()
@@ -246,10 +200,6 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase.reload()
     >>> len(purchase.moves), len(purchase.shipment_returns), len(purchase.invoices)
     (2, 0, 0)
-    >>> contract.reload()
-    >>> line, = contract.lines
-    >>> line.consumed_quantity == 10.0
-    True
 
 Validate Shipments::
 
@@ -270,6 +220,10 @@ Validate Shipments::
     >>> purchase.reload()
     >>> len(purchase.shipments), len(purchase.shipment_returns)
     (1, 0)
+    >>> contract.reload()
+    >>> line, = contract.lines
+    >>> line.consumed_quantity == 5.0
+    True
 
 Open supplier invoice::
 
@@ -285,11 +239,11 @@ Open supplier invoice::
     True
     >>> contract.reload()
     >>> line, = contract.lines
-    >>> line.consumed_quantity == 10.0
+    >>> line.consumed_quantity == 5.0
     True
-    >>> line.origin_quantity == 9.0
+    >>> line.origin_quantity == 4.0
     True
-    >>> line.destination_quantity == 10.0
+    >>> line.destination_quantity == 5.0
     True
 
 Purchase in diferent uom::
@@ -299,8 +253,9 @@ Purchase in diferent uom::
     >>> g, = ProductUom.find([('name', '=', 'Gram')])
     >>> purchase = Purchase()
     >>> purchase.party = supplier
+    >>> purchase.purchase_date = today
     >>> purchase.payment_term = payment_term
-    >>> purchase.invoice_method = 'order'
+    >>> purchase.invoice_method = 'shipment'
     >>> purchase_line = PurchaseLine()
     >>> purchase.lines.append(purchase_line)
     >>> purchase_line.product = product
@@ -310,7 +265,26 @@ Purchase in diferent uom::
     >>> purchase.save()
     >>> Purchase.quote([purchase.id], config.context)
     >>> Purchase.confirm([purchase.id], config.context)
+
+
+Validate Shipment::
+
+    >>> shipment = ShipmentIn()
+    >>> shipment.supplier = supplier
+    >>> for move in purchase.moves:
+    ...     incoming_move = Move(id=move.id)
+    ...     incoming_move.origin_uom = incoming_move.uom
+    ...     incoming_move.origin_quantity = 200.0
+    ...     shipment.incoming_moves.append(incoming_move)
+    >>> shipment.save()
+    >>> shipment.origins == purchase.rec_name
+    True
+    >>> ShipmentIn.receive([shipment.id], config.context)
+    >>> ShipmentIn.done([shipment.id], config.context)
+    >>> purchase.reload()
+    >>> len(purchase.shipments), len(purchase.shipment_returns)
+    (1, 0)
     >>> contract.reload()
     >>> line, = contract.lines
-    >>> line.consumed_quantity == 10.2
+    >>> line.consumed_quantity == 5.2
     True

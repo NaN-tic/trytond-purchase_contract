@@ -1,15 +1,40 @@
-#The COPYRIGHT file at the top level of this repository contains the full
-#copyright notices and license terms.
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL, Workflow, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Bool, Date, Eval, Not
+from trytond.pyson import Bool, Date, Eval, Not, Or
 
-__all__ = ['PurchaseLine', 'PurchaseContract', 'PurchaseContractLine']
+__all__ = ['Purchase', 'PurchaseLine',
+    'PurchaseContract', 'PurchaseContractLine']
 __metaclass__ = PoolMeta
 
 
+class Purchase():
+    __name__ = 'purchase.purchase'
+
+    has_contract_lines = fields.Function(fields.Boolean('Has Contract Lines?',
+            on_change_with=['lines', 'lines.contract_line']),
+        'on_change_with_has_contract_lines')
+
+    @classmethod
+    def __setup__(cls):
+        super(Purchase, cls).__setup__()
+        if cls.purchase_date.states.get('required'):
+            cls.purchase_date.states['required'] = Or(
+                cls.purchase_date.states['required'],
+                Eval('has_contract_lines', False))
+        else:
+            cls.purchase_date.states['required'] = Eval('has_contract_lines',
+                False)
+        cls.purchase_date.depends.append('has_contract_lines')
+
+    def on_change_with_has_contract_lines(self, name=None):
+        if not self.lines:
+            return False
+        return any(l.contract != None for l in self.lines)
+
+
 class PurchaseLine():
-    'Purchase Line'
     __name__ = 'purchase.line'
 
     contract = fields.Function(fields.Many2One('purchase.contract', 'Contract',
@@ -23,22 +48,24 @@ class PurchaseLine():
                 ['OR',
                     ('start_date', '=', None),
                     ('start_date', '<=',
-                        Eval('_parent_purchase', {}).get('purchase_date',
-                            Date())),
+                        Eval('_parent_purchase',
+                            {}).get('purchase_date', Date())),
                     ],
                 ['OR',
                     ('end_date', '=', None),
                     ('end_date', '>=',
-                        Eval('_parent_purchase', {}).get('purchase_date',
-                            Date())),
+                        Eval('_parent_purchase',
+                            {}).get('purchase_date', Date())),
                     ],
-            ], depends=['product']), 'get_contract',
-        setter='set_contract')
+            ], depends=['product']),
+        'get_contract', setter='set_contract')
     contract_line = fields.Many2One('purchase.contract.line', 'Contract Line')
 
     @classmethod
     def __setup__(cls):
         super(PurchaseLine, cls).__setup__()
+        cls.quantity.on_change.append('contract')
+        cls.unit.on_change.append('contract')
         cls._error_messages.update({
                 'invalid_invoice_method': ('The Purchase "%s" has some line '
                     'associated to a Purchase Contract but its Invoice Method '
@@ -64,6 +91,8 @@ class PurchaseLine():
 
     @classmethod
     def set_contract(cls, lines, name, value):
+        Uom = Pool().get('product.uom')
+
         if not value:
             return
         ContractLines = Pool().get('purchase.contract.line')
@@ -76,13 +105,16 @@ class PurchaseLine():
                 if len(lines) > 0:
                     line = lines[0]
                     cls.write([purchase_line], {
-                        'contract_line': line,
-                        })
+                            'contract_line': line,
+                            'unit_price': Uom.compute_price(line.unit,
+                                line.agreed_unit_price, purchase_line.unit),
+                            })
 
     def on_change_product(self):
         pool = Pool()
         ContractLines = pool.get('purchase.contract.line')
         Date = pool.get('ir.date')
+        Uom = pool.get('product.uom')
 
         res = super(PurchaseLine, self).on_change_product()
         if self.purchase and self.purchase.party and self.product is not None:
@@ -103,6 +135,24 @@ class PurchaseLine():
                     ], limit=1)
             if lines:
                 res['contract'] = lines[0].contract.id
+                res['unit_price'] = Uom.compute_price(lines[0].unit,
+                    lines[0].agreed_unit_price, self.unit)
+        return res
+
+    def on_change_quantity(self):
+        pool = Pool()
+        ContractLines = pool.get('purchase.contract.line')
+        Uom = pool.get('product.uom')
+
+        res = super(PurchaseLine, self).on_change_quantity()
+        if self.contract and self.product is not None:
+            lines = ContractLines.search([
+                    ('contract', '=', self.contract),
+                    ('product', '=', self.product),
+                    ], limit=1)
+            if lines:
+                res['unit_price'] = Uom.compute_price(lines[0].unit,
+                    lines[0].agreed_unit_price, self.unit)
         return res
 
     def get_invoice_line(self, invoice_type):
@@ -256,6 +306,8 @@ class PurchaseContractLine(ModelSQL, ModelView):
         'on_change_with_unit_digits')
     agreed_quantity = fields.Float('Agreed Quantity',
         digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
+    agreed_unit_price = fields.Numeric('Agreed Unit Price', digits=(16, 4),
+        required=True, on_change_with=['product'])
     lines = fields.One2Many('purchase.line', 'contract_line',
         'Lines', readonly=True)
     moves = fields.Function(fields.One2Many('stock.move', None, 'Moves',
@@ -276,7 +328,8 @@ class PurchaseContractLine(ModelSQL, ModelView):
         super(PurchaseContractLine, cls).__setup__()
         cls._sql_constraints += [
             ('contract_product_uniq', 'unique (contract,product)',
-                'unique_product')
+                'There can not be two lines for the same product in a '
+                'contract.')
             ]
 
     @classmethod
@@ -297,6 +350,9 @@ class PurchaseContractLine(ModelSQL, ModelView):
         if self.unit:
             return self.unit.digits
         return 2
+
+    def on_change_with_agreed_unit_price(self):
+        return self.product.cost_price if self.product else None
 
     def get_moves(self, name):
         moves = []

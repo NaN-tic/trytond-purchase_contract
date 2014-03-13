@@ -3,14 +3,16 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "error:purchase.contract.line:"
-msgid "unique_product"
-msgstr "El producte ha de ser únic per contracte"
+msgid "There can not be two lines for the same product in a contract."
+msgstr "No hi pot haver dos línes per un mateix producte en un contracte."
 
 msgctxt "error:purchase.line:"
 msgid ""
 "The Purchase \"%s\" has some line associated to a Purchase Contract but its "
 "Invoice Method is not \"Based On Shipment\"."
 msgstr ""
+"La compra \"%s\" té alguna línia associada a un contracte de compra però el "
+"mètode de facturació no és \"Basat en l'enviament\""
 
 msgctxt "field:purchase.contract,contract_type:"
 msgid "Contract quantity"
@@ -67,6 +69,10 @@ msgstr "Usuari modificació"
 msgctxt "field:purchase.contract.line,agreed_quantity:"
 msgid "Agreed Quantity"
 msgstr "Quantitat pactada"
+
+msgctxt "field:purchase.contract.line,agreed_unit_price:"
+msgid "Agreed Unit Price"
+msgstr "Preu unitari pactat"
 
 msgctxt "field:purchase.contract.line,consumed_quantity:"
 msgid "Consumed Quantity"
@@ -136,9 +142,17 @@ msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
 msgstr "Línia de contracte"
 
+msgctxt "field:purchase.purchase,has_contract_lines:"
+msgid "Has Contract Lines?"
+msgstr "Té línies amb contracte?"
+
 msgctxt "field:stock.move,origin_quantity:"
 msgid "Origin Quantity"
 msgstr "Quantitat Origen"
+
+msgctxt "field:stock.move,origin_quantity_required:"
+msgid ""
+msgstr ""
 
 msgctxt "field:stock.move,origin_unit_digits:"
 msgid "Origin Unit Digits"
