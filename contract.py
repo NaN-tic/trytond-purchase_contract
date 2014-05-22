@@ -12,8 +12,7 @@ __metaclass__ = PoolMeta
 class Purchase():
     __name__ = 'purchase.purchase'
 
-    has_contract_lines = fields.Function(fields.Boolean('Has Contract Lines?',
-            on_change_with=['lines', 'lines.contract_line']),
+    has_contract_lines = fields.Function(fields.Boolean('Has Contract Lines?'),
         'on_change_with_has_contract_lines')
 
     @classmethod
@@ -64,8 +63,8 @@ class PurchaseLine():
     @classmethod
     def __setup__(cls):
         super(PurchaseLine, cls).__setup__()
-        cls.quantity.on_change.append('contract')
-        cls.unit.on_change.append('contract')
+        cls.quantity.on_change.add('contract')
+        cls.unit.on_change.add('contract')
         cls._error_messages.update({
                 'invalid_invoice_method': ('The Purchase "%s" has some line '
                     'associated to a Purchase Contract but its Invoice Method '

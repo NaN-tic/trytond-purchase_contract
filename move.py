@@ -25,11 +25,8 @@ class Move():
     origin_uom = fields.Many2One("product.uom", "Origin Uom", domain=[
             ('category', '=', Eval('product_uom_category')),
             ], states=ORIGIN_STATES,
-        on_change_with=['origin_quantity_required', 'origin_quantity',
-            'product', 'uom'],
         depends=['product_uom_category', 'state', 'origin_quantity_required'])
-    origin_unit_digits = fields.Function(fields.Integer('Origin Unit Digits',
-            on_change_with=['origin_uom']),
+    origin_unit_digits = fields.Function(fields.Integer('Origin Unit Digits'),
         'on_change_with_origin_unit_digits')
     origin_quantity = fields.Float("Origin Quantity",
         digits=(16, Eval('origin_unit_digits', 2)),
@@ -40,15 +37,17 @@ class Move():
     def __setup__(cls):
         super(Move, cls).__setup__()
         if not cls.quantity.on_change:
-            cls.quantity.on_change = []
+            cls.quantity.on_change = set()
         if not 'quantity' in cls.quantity.on_change:
-            cls.quantity.on_change.append('quantity')
+            cls.quantity.on_change.add('quantity')
 
     def get_origin_quantity_required(self, name):
         PurchaseLine = Pool().get('purchase.line')
         return (self.origin and isinstance(self.origin, PurchaseLine)
             and self.origin.contract_line and True or False)
 
+    @fields.depends('origin_quantity_required', 'origin_quantity', 'product',
+        'uom')
     def on_change_with_origin_uom(self):
         if not self.origin_quantity_required:
             return None
@@ -57,6 +56,7 @@ class Move():
         if self.product:
             return self.product.default_uom.id
 
+    @fields.depends('origin_uom')
     def on_change_with_origin_unit_digits(self, name=None):
         if self.origin_uom:
             return self.origin_uom.digits
