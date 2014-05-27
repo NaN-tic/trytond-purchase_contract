@@ -297,16 +297,14 @@ class PurchaseContractLine(ModelSQL, ModelView):
         ondelete='CASCADE')
     product = fields.Many2One('product.product', 'Product', required=True,
         domain=[('purchasable', '=', True)])
-    unit = fields.Function(fields.Many2One('product.uom', 'Unit',
-            on_change_with=['product']),
+    unit = fields.Function(fields.Many2One('product.uom', 'Unit'),
         'on_change_with_unit')
-    unit_digits = fields.Function(fields.Integer('Unit Digits',
-            on_change_with=['unit']),
+    unit_digits = fields.Function(fields.Integer('Unit Digits'),
         'on_change_with_unit_digits')
     agreed_quantity = fields.Float('Agreed Quantity',
         digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
     agreed_unit_price = fields.Numeric('Agreed Unit Price', digits=(16, 4),
-        required=True, on_change_with=['product'])
+        required=True)
     lines = fields.One2Many('purchase.line', 'contract_line',
         'Lines', readonly=True)
     moves = fields.Function(fields.One2Many('stock.move', None, 'Moves',
@@ -340,16 +338,19 @@ class PurchaseContractLine(ModelSQL, ModelView):
 
         return super(PurchaseContractLine, cls).copy(lines, default=default)
 
+    @fields.depends('product')
     def on_change_with_unit(self, name=None):
         if self.product:
             return self.product.purchase_uom.id
         return None
 
+    @fields.depends('unit')
     def on_change_with_unit_digits(self, name=None):
         if self.unit:
             return self.unit.digits
         return 2
 
+    @fields.depends('product')
     def on_change_with_agreed_unit_price(self):
         return self.product.cost_price if self.product else None
 
