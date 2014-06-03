@@ -27,6 +27,7 @@ class Purchase():
                 False)
         cls.purchase_date.depends.append('has_contract_lines')
 
+    @fields.depends('lines', 'lines.contract_line')
     def on_change_with_has_contract_lines(self, name=None):
         if not self.lines:
             return False
@@ -56,14 +57,13 @@ class PurchaseLine():
                         Eval('_parent_purchase',
                             {}).get('purchase_date', Date())),
                     ],
-            ], depends=['product']),
+                ], depends=['product']),
         'get_contract', setter='set_contract')
     contract_line = fields.Many2One('purchase.contract.line', 'Contract Line')
 
     @classmethod
     def __setup__(cls):
         super(PurchaseLine, cls).__setup__()
-        cls.quantity.on_change.add('contract')
         cls.unit.on_change.add('contract')
         cls._error_messages.update({
                 'invalid_invoice_method': ('The Purchase "%s" has some line '
@@ -138,6 +138,7 @@ class PurchaseLine():
                     lines[0].agreed_unit_price, self.unit)
         return res
 
+    @fields.depends('contract')
     def on_change_quantity(self):
         pool = Pool()
         ContractLines = pool.get('purchase.contract.line')
@@ -184,8 +185,7 @@ class PurchaseLine():
 
 _STATES = {
     'readonly': Eval('state') != 'draft',
-}
-
+    }
 _DEPENDS = ['state']
 
 
@@ -194,10 +194,10 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
     __name__ = 'purchase.contract'
 
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('cancel', 'Canceled'),
-    ], 'State', readonly=True, required=True)
+            ('draft', 'Draft'),
+            ('active', 'Active'),
+            ('cancel', 'Canceled'),
+            ], 'State', readonly=True, required=True)
     party = fields.Many2One('party.party', 'Supplier', required=True,
         states=_STATES, depends=_DEPENDS)
     contract_type = fields.Selection([

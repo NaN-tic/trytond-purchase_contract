@@ -1,5 +1,5 @@
-#The COPYRIGHT file at the top level of this repository contains the full
-#copyright notices and license terms.
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import And, Eval
@@ -32,14 +32,6 @@ class Move():
         digits=(16, Eval('origin_unit_digits', 2)),
         states=ORIGIN_STATES,
         depends=['origin_unit_digits', 'state', 'origin_quantity_required'])
-
-    @classmethod
-    def __setup__(cls):
-        super(Move, cls).__setup__()
-        if not cls.quantity.on_change:
-            cls.quantity.on_change = set()
-        if not 'quantity' in cls.quantity.on_change:
-            cls.quantity.on_change.add('quantity')
 
     def get_origin_quantity_required(self, name):
         PurchaseLine = Pool().get('purchase.line')
@@ -74,7 +66,8 @@ class Move():
         res['origin_uom'] = self.uom
         return res
 
+    @fields.depends('quantity')
     def on_change_quantity(self):
         return {
             'origin_quantity': self.quantity,
-        }
+            }
