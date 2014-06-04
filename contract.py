@@ -27,11 +27,11 @@ class Purchase():
                 False)
         cls.purchase_date.depends.append('has_contract_lines')
 
-    @fields.depends('lines', 'lines.contract_line')
+    @fields.depends('lines', 'lines.contract')
     def on_change_with_has_contract_lines(self, name=None):
         if not self.lines:
             return False
-        return any(l.contract != None for l in self.lines)
+        return any(getattr(l, 'contract', None) != None for l in self.lines)
 
 
 class PurchaseLine():

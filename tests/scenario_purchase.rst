@@ -178,6 +178,14 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase.purchase_date = today
     >>> purchase.payment_term = payment_term
     >>> purchase.invoice_method = 'shipment'
+    >>> purchase.has_contract_lines
+    False
+    >>> purchase_line = PurchaseLine()
+    >>> purchase.lines.append(purchase_line)
+    >>> purchase_line.type = 'comment'
+    >>> purchase_line.description = 'Comment'
+    >>> purchase.has_contract_lines
+    False
     >>> purchase_line = PurchaseLine()
     >>> purchase.lines.append(purchase_line)
     >>> purchase_line.product = product
@@ -185,13 +193,11 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase_line.contract = contract
     >>> purchase_line = PurchaseLine()
     >>> purchase.lines.append(purchase_line)
-    >>> purchase_line.type = 'comment'
-    >>> purchase_line.description = 'Comment'
-    >>> purchase_line = PurchaseLine()
-    >>> purchase.lines.append(purchase_line)
     >>> purchase_line.product = product
     >>> purchase_line.quantity = 3.0
     >>> purchase_line.contract = contract
+    >>> purchase.has_contract_lines
+    True
     >>> purchase.save()
     >>> Purchase.quote([purchase.id], config.context)
     >>> Purchase.confirm([purchase.id], config.context)
