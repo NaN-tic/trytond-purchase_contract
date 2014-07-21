@@ -73,8 +73,3 @@ class Move():
         res = super(Move, self).on_change_uom()
         res['origin_uom'] = self.uom
         return res
-
-    def on_change_quantity(self):
-        return {
-            'origin_quantity': self.quantity,
-        }
