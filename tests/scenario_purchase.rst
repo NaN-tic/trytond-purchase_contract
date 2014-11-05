@@ -199,10 +199,11 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase.has_contract_lines
     True
     >>> purchase.save()
-    >>> Purchase.quote([purchase.id], config.context)
-    >>> Purchase.confirm([purchase.id], config.context)
+    >>> purchase.click('quote')
+    >>> purchase.click('confirm')
+    >>> purchase.click('process')
     >>> purchase.state
-    u'confirmed'
+    u'processing'
     >>> purchase.reload()
     >>> len(purchase.moves), len(purchase.shipment_returns), len(purchase.invoices)
     (2, 0, 0)
@@ -228,8 +229,8 @@ Validate Shipments::
     (1, 0)
     >>> contract.reload()
     >>> line, = contract.lines
-    >>> line.consumed_quantity == 5.0
-    True
+    >>> line.consumed_quantity
+    5.0
 
 Open supplier invoice::
 
@@ -269,8 +270,9 @@ Purchase in diferent uom::
     >>> purchase_line.contract = contract
     >>> purchase_line.unit = g
     >>> purchase.save()
-    >>> Purchase.quote([purchase.id], config.context)
-    >>> Purchase.confirm([purchase.id], config.context)
+    >>> purchase.click('quote')
+    >>> purchase.click('confirm')
+    >>> purchase.click('process')
 
 
 Validate Shipment::

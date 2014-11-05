@@ -357,7 +357,7 @@ class PurchaseContractLine(ModelSQL, ModelView):
     def get_moves(self, name):
         moves = []
         for line in self.lines:
-            if line.purchase.state in ['confirmed', 'done']:
+            if line.purchase.state in ['processing', 'done']:
                 moves.extend([m.id for m in line.moves
                         if m.state not in ('draft' 'cancel')])
         return moves
