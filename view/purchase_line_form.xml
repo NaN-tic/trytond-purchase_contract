@@ -3,7 +3,7 @@
      copyright notices and license terms. -->
 <data>
     <xpath expr="//field[@name='product']" position="after">
-            <label name="contract"/>
-            <field name="contract"/>
+        <label name="contract_line"/>
+        <field name="contract_line"/>
     </xpath>
 </data>
