@@ -152,7 +152,7 @@ class PurchaseLine():
         if len(lines) != 1:
             return lines
         line, = lines
-        contract = self.contract_line.contract
+        contract = self.contract_line and self.contract_line.contract
         if (contract and contract.invoice_type == 'origin' and
                 self.purchase.invoice_method == 'shipment' and self.product
                 and self.product.type != 'service'):
