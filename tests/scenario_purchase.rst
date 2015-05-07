@@ -156,16 +156,9 @@ Create purchase contract::
     >>> contract.party = supplier
     >>> contract.contract_type = 'destination'
     >>> contract.invoice_type = 'origin'
-    >>> contract_line = ContractLine()
-    >>> contract.lines.append(contract_line)
+    >>> contract_line = contract.lines.new()
     >>> contract_line.product = product
-    >>> contract_line.product = product
-    >>> contract.save()
-    >>> contract.reload()
-    >>> contract.state
-    u'draft'
-    >>> Contract.active([contract.id], config.context)
-    >>> contract.reload()
+    >>> contract.click('active')
     >>> contract.state
     u'active'
 
@@ -198,7 +191,6 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase_line.contract = contract
     >>> purchase.has_contract_lines
     True
-    >>> purchase.save()
     >>> purchase.click('quote')
     >>> purchase.click('confirm')
     >>> purchase.click('process')
@@ -246,12 +238,12 @@ Open supplier invoice::
     True
     >>> contract.reload()
     >>> line, = contract.lines
-    >>> line.consumed_quantity == 5.0
-    True
-    >>> line.origin_quantity == 4.0
-    True
-    >>> line.destination_quantity == 5.0
-    True
+    >>> line.consumed_quantity
+    5.0
+    >>> line.origin_quantity
+    4.0
+    >>> line.destination_quantity
+    5.0
 
 Purchase in diferent uom::
 
@@ -269,7 +261,6 @@ Purchase in diferent uom::
     >>> purchase_line.quantity = 200.0
     >>> purchase_line.contract = contract
     >>> purchase_line.unit = g
-    >>> purchase.save()
     >>> purchase.click('quote')
     >>> purchase.click('confirm')
     >>> purchase.click('process')
@@ -294,5 +285,5 @@ Validate Shipment::
     (1, 0)
     >>> contract.reload()
     >>> line, = contract.lines
-    >>> line.consumed_quantity == 5.2
-    True
+    >>> line.consumed_quantity
+    5.2

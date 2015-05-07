@@ -9,7 +9,7 @@ __all__ = ['Purchase', 'PurchaseLine',
 __metaclass__ = PoolMeta
 
 
-class Purchase():
+class Purchase:
     __name__ = 'purchase.purchase'
 
     has_contract_lines = fields.Function(fields.Boolean('Has Contract Lines?'),
@@ -36,7 +36,7 @@ class Purchase():
     def on_change_with_has_contract_lines(self, name=None):
         if not self.lines:
             return False
-        return any(getattr(l, 'contract', None) != None for l in self.lines)
+        return any(getattr(l, 'contract_line') for l in self.lines)
 
     @classmethod
     def validate(cls, purchases):
@@ -79,8 +79,7 @@ class PurchaseLine():
                     Eval('_parent_purchase', {}).get('purchase_date', Date())),
                 ],
             ],
-        depends=['product', '_parent_purchase.party',
-                '_parent_purchase.purchase_date'])
+        depends=['product', 'purchase'])
 
     @classmethod
     def __setup__(cls):
