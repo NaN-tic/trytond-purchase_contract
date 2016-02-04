@@ -3,8 +3,7 @@
 from trytond.model import ModelView, ModelSQL, Workflow, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Date, Eval, Or
-from trytond.config import config
-DIGITS = int(config.get('digits', 'unit_price_digits', 4))
+from trytond.modules.product import price_digits
 
 __all__ = ['Purchase', 'PurchaseLine',
     'PurchaseContract', 'PurchaseContractLine']
@@ -294,8 +293,8 @@ class PurchaseContractLine(ModelSQL, ModelView):
         'on_change_with_unit_digits')
     agreed_quantity = fields.Float('Agreed Quantity',
         digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
-    agreed_unit_price = fields.Numeric('Agreed Unit Price', digits=(16, DIGITS),
-        required=True)
+    agreed_unit_price = fields.Numeric('Agreed Unit Price',
+        digits=price_digits, required=True)
     lines = fields.One2Many('purchase.line', 'contract_line',
         'Lines', readonly=True)
     moves = fields.Function(fields.One2Many('stock.move', None, 'Moves',
