@@ -135,7 +135,8 @@ class PurchaseLine():
                     lines[0].agreed_unit_price, self.unit)
         return res
 
-    @fields.depends('contract_line')
+    @fields.depends('contract_line', '_parent_contract_line.unit',
+        '_parent_contract_line.agreed_unit_price')
     def on_change_quantity(self):
         pool = Pool()
         Uom = pool.get('product.uom')
