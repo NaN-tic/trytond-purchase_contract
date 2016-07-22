@@ -55,19 +55,15 @@ class Move():
         return 2
 
     def on_change_product(self):
-        res = super(Move, self).on_change_product()
+        super(Move, self).on_change_product()
         for field in ['uom', 'uom.rec_name', 'unit_digits']:
-            if field in res:
-                res["origin_%s" % field] = res[field]
-        return res
+            if getattr(self, field, None):
+                setattr(self, "origin_%s" % field, self.field)
 
     def on_change_uom(self):
-        res = super(Move, self).on_change_uom()
-        res['origin_uom'] = self.uom
-        return res
+        super(Move, self).on_change_uom()
+        self.origin_uom = self.uom
 
     @fields.depends('quantity')
     def on_change_quantity(self):
-        return {
-            'origin_quantity': self.quantity,
-            }
+        self.origin_quantity = self.quantity

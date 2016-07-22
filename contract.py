@@ -111,7 +111,7 @@ class PurchaseLine():
         Date = pool.get('ir.date')
         Uom = pool.get('product.uom')
 
-        res = super(PurchaseLine, self).on_change_product()
+        super(PurchaseLine, self).on_change_product()
         if self.purchase and self.purchase.party and self.product is not None:
             lines = ContractLines.search([
                     ('contract.party', '=', self.purchase.party),
@@ -129,21 +129,19 @@ class PurchaseLine():
                         ],
                     ], limit=1)
             if lines:
-                res['contract_line'] = lines[0].id
-                res['unit_price'] = Uom.compute_price(lines[0].unit,
+                self.contract_line = lines[0]
+                self.unit_price = Uom.compute_price(lines[0].unit,
                     lines[0].agreed_unit_price, self.unit)
-        return res
 
     @fields.depends('contract_line')
     def on_change_quantity(self):
         pool = Pool()
         Uom = pool.get('product.uom')
 
-        res = super(PurchaseLine, self).on_change_quantity()
+        super(PurchaseLine, self).on_change_quantity()
         if self.contract_line:
-            res['unit_price'] = Uom.compute_price(self.contract_line.unit,
+            self.unit_price = Uom.compute_price(self.contract_line.unit,
                     self.contract_line.agreed_unit_price, self.unit)
-        return res
 
     def get_invoice_line(self, invoice_type):
         pool = Pool()
