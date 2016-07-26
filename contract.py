@@ -143,10 +143,10 @@ class PurchaseLine():
             self.unit_price = Uom.compute_price(self.contract_line.unit,
                     self.contract_line.agreed_unit_price, self.unit)
 
-    def get_invoice_line(self, invoice_type):
+    def get_invoice_line(self):
         pool = Pool()
         Uom = pool.get('product.uom')
-        lines = super(PurchaseLine, self).get_invoice_line(invoice_type)
+        lines = super(PurchaseLine, self).get_invoice_line()
         if len(lines) != 1:
             return lines
         line, = lines
