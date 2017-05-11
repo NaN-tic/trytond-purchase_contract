@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -68,11 +68,11 @@ msgstr "Estado"
 
 msgctxt "field:purchase.contract,write_date:"
 msgid "Write Date"
-msgstr "Fecha modificación"
+msgstr "Fecha de modificación"
 
 msgctxt "field:purchase.contract,write_uid:"
 msgid "Write User"
-msgstr "Usuario modificación"
+msgstr "Usuario de modificación"
 
 msgctxt "field:purchase.contract.line,agreed_quantity:"
 msgid "Agreed Quantity"
@@ -120,7 +120,7 @@ msgstr "Cantidad origen"
 
 msgctxt "field:purchase.contract.line,product:"
 msgid "Product"
-msgstr "Productos"
+msgstr "Producto"
 
 msgctxt "field:purchase.contract.line,rec_name:"
 msgid "Name"
@@ -136,11 +136,11 @@ msgstr "Dígitos unidad"
 
 msgctxt "field:purchase.contract.line,write_date:"
 msgid "Write Date"
-msgstr "Fecha modificación"
+msgstr "Fecha de modificación"
 
 msgctxt "field:purchase.contract.line,write_uid:"
 msgid "Write User"
-msgstr "Usuario modificación"
+msgstr "Usuario de modificación"
 
 msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"

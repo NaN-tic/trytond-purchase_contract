@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -28,11 +28,11 @@ msgstr "Quantitat del contracte"
 
 msgctxt "field:purchase.contract,create_date:"
 msgid "Create Date"
-msgstr "Data creació"
+msgstr "Data de creació"
 
 msgctxt "field:purchase.contract,create_uid:"
 msgid "Create User"
-msgstr "Usuari creació"
+msgstr "Usuari de creació"
 
 msgctxt "field:purchase.contract,end_date:"
 msgid "End Date"
@@ -68,11 +68,11 @@ msgstr "Estat"
 
 msgctxt "field:purchase.contract,write_date:"
 msgid "Write Date"
-msgstr "Data modificació"
+msgstr "Data de modificació"
 
 msgctxt "field:purchase.contract,write_uid:"
 msgid "Write User"
-msgstr "Usuari modificació"
+msgstr "Usuari de modificació"
 
 msgctxt "field:purchase.contract.line,agreed_quantity:"
 msgid "Agreed Quantity"
@@ -92,11 +92,11 @@ msgstr "Contracte"
 
 msgctxt "field:purchase.contract.line,create_date:"
 msgid "Create Date"
-msgstr "Data creació"
+msgstr "Data de creació"
 
 msgctxt "field:purchase.contract.line,create_uid:"
 msgid "Create User"
-msgstr "Usuari creació"
+msgstr "Usuari de creació"
 
 msgctxt "field:purchase.contract.line,destination_quantity:"
 msgid "Destination Quantity"
@@ -120,7 +120,7 @@ msgstr "Quantitat Origen"
 
 msgctxt "field:purchase.contract.line,product:"
 msgid "Product"
-msgstr "Productes"
+msgstr "Producte"
 
 msgctxt "field:purchase.contract.line,rec_name:"
 msgid "Name"
@@ -136,11 +136,11 @@ msgstr "Dígits de la unitat"
 
 msgctxt "field:purchase.contract.line,write_date:"
 msgid "Write Date"
-msgstr "Data modificació"
+msgstr "Data de modificació"
 
 msgctxt "field:purchase.contract.line,write_uid:"
 msgid "Write User"
-msgstr "Usuari modificació"
+msgstr "Usuari de modificació"
 
 msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
