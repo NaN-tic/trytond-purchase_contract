@@ -1,9 +1,8 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import ModelView, ModelSQL, Workflow, fields
+from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Date, Eval, Or
-from trytond.modules.product import price_digits
 
 __all__ = ['Purchase', 'PurchaseLine']
 
