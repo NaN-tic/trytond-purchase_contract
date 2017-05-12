@@ -2,7 +2,7 @@
 # copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL, Workflow, fields
 from trytond.pool import Pool
-from trytond.pyson import Date, Eval, Or
+from trytond.pyson import Eval
 from trytond.modules.product import price_digits
 
 __all__ = ['PurchaseContract', 'PurchaseContractLine']
