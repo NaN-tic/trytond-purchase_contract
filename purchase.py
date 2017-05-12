@@ -78,7 +78,10 @@ class PurchaseLine:
                     Eval('_parent_purchase', {}).get('purchase_date', Date())),
                 ],
             ],
-        depends=['product', 'purchase'])
+        states={
+            'invisible': Eval('type') != 'line',
+            },
+        depends=['product', 'purchase', 'type'])
 
     @classmethod
     def __setup__(cls):
