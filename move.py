@@ -6,7 +6,6 @@ from trytond.pyson import And, Eval
 from trytond.modules.stock.move import STATES
 
 __all__ = ['Move']
-__metaclass__ = PoolMeta
 
 ORIGIN_STATES = STATES.copy()
 ORIGIN_STATES.update({
@@ -16,7 +15,8 @@ ORIGIN_STATES.update({
         })
 
 
-class Move():
+class Move:
+    __metaclass__ = PoolMeta
     __name__ = 'stock.move'
 
     origin_quantity_required = fields.Function(
@@ -56,9 +56,9 @@ class Move():
 
     def on_change_product(self):
         super(Move, self).on_change_product()
-        for field in ['uom', 'uom.rec_name', 'unit_digits']:
-            if getattr(self, field, None):
-                setattr(self, "origin_%s" % field, self.field)
+        for field in ['uom', 'unit_digits']:
+            value = getattr(self, field, None)
+            setattr(self, "origin_%s" % field, value)
 
     def on_change_uom(self):
         super(Move, self).on_change_uom()
