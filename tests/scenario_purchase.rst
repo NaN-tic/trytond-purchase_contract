@@ -9,31 +9,23 @@ Imports::
     >>> from decimal import Decimal
     >>> from operator import attrgetter
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
-    ...     create_chart, get_accounts, create_tax, set_tax_code
+    ...     create_chart, get_accounts, create_tax
     >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
 
-Create database::
+Activate module::
 
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install purchase_contract::
-
-    >>> Module = Model.get('ir.module')
-    >>> purchase_module, = Module.find([('name', '=', 'purchase_contract')])
-    >>> Module.install([purchase_module.id], config.context)
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('purchase_contract')
 
 Create company::
 
     >>> _ = create_company()
     >>> company = get_company()
-    >>> party = company.party
 
 Reload the context::
 
@@ -67,13 +59,21 @@ Create parties::
     >>> customer = Party(name='Customer')
     >>> customer.save()
 
+Create account category::
+
+    >>> ProductCategory = Model.get('product.category')
+    >>> account_category = ProductCategory(name="Account Category")
+    >>> account_category.accounting = True
+    >>> account_category.account_expense = expense
+    >>> account_category.account_revenue = revenue
+    >>> account_category.save()
+
 Create product::
 
     >>> ProductUom = Model.get('product.uom')
     >>> kg, = ProductUom.find([('name', '=', 'Kilogram')])
     >>> ProductTemplate = Model.get('product.template')
     >>> Product = Model.get('product.product')
-    >>> product = Product()
     >>> template = ProductTemplate()
     >>> template.name = 'product'
     >>> template.default_uom = kg
@@ -81,13 +81,9 @@ Create product::
     >>> template.purchasable = True
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
-    >>> template.cost_price = Decimal('5')
-    >>> template.cost_price_method = 'fixed'
-    >>> template.account_expense = expense
-    >>> template.account_revenue = revenue
+    >>> template.account_category = account_category
     >>> template.save()
-    >>> product.template = template
-    >>> product.save()
+    >>> product, = template.products
 
 Create payment term::
 
@@ -107,7 +103,7 @@ Create purchase contract::
     >>> contract_line.product = product
     >>> contract.click('active')
     >>> contract.state
-    u'active'
+    'active'
 
 Purchase 5 products with an invoice method 'on shipment'::
 
@@ -142,7 +138,7 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase.click('confirm')
     >>> purchase.click('process')
     >>> purchase.state
-    u'processing'
+    'processing'
     >>> purchase.reload()
     >>> len(purchase.moves), len(purchase.shipment_returns), len(purchase.invoices)
     (2, 0, 0)
@@ -176,7 +172,7 @@ Open supplier invoice::
     >>> Invoice = Model.get('account.invoice')
     >>> invoice, = purchase.invoices
     >>> invoice.type
-    u'in'
+    'in'
     >>> len(invoice.lines)
     2
     >>> for line in invoice.lines:

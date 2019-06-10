@@ -15,8 +15,7 @@ ORIGIN_STATES.update({
         })
 
 
-class Move:
-    __metaclass__ = PoolMeta
+class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
 
     origin_quantity_required = fields.Function(
@@ -55,13 +54,13 @@ class Move:
         return 2
 
     def on_change_product(self):
-        super(Move, self).on_change_product()
+        super().on_change_product()
         for field in ['uom', 'unit_digits']:
             value = getattr(self, field, None)
             setattr(self, "origin_%s" % field, value)
 
+    @fields.depends('uom')
     def on_change_uom(self):
-        super(Move, self).on_change_uom()
         self.origin_uom = self.uom
 
     @fields.depends('quantity')

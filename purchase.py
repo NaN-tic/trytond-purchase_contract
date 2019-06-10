@@ -3,12 +3,13 @@
 from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Date, Eval, Or
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 __all__ = ['Purchase', 'PurchaseLine']
 
 
-class Purchase:
-    __metaclass__ = PoolMeta
+class Purchase(metaclass=PoolMeta):
     __name__ = 'purchase.purchase'
     has_contract_lines = fields.Function(fields.Boolean('Has Contract Lines?'),
         'on_change_with_has_contract_lines')
@@ -24,11 +25,6 @@ class Purchase:
             cls.purchase_date.states['required'] = Eval('has_contract_lines',
                 False)
         cls.purchase_date.depends.append('has_contract_lines')
-        cls._error_messages.update({
-                'invalid_contract_dates': (
-                    'The date of purchase "%(purchase)s" is not in the period '
-                    'of contract "%(contract)s" selected in line "%(line)s".'),
-                })
 
     @fields.depends('lines')
     def on_change_with_has_contract_lines(self, name=None):
@@ -51,15 +47,15 @@ class Purchase:
                     and self.purchase_date < contract.start_date
                     or contract.end_date
                     and self.purchase_date > contract.end_date):
-                self.raise_user_error('invalid_contract_dates', {
-                        'purchase': self.rec_name,
-                        'contract': contract.rec_name,
-                        'line': line.rec_name,
-                        })
+                raise UserError(gettext('purchase_contract.'
+                        'msg_invalid_contract_dates',
+                        purchase=self.rec_name,
+                        contract=contract.rec_name,
+                        line=line.rec_name,
+                        ))
 
 
-class PurchaseLine:
-    __metaclass__ = PoolMeta
+class PurchaseLine(metaclass=PoolMeta):
     __name__ = 'purchase.line'
 
     contract_line = fields.Many2One('purchase.contract.line', 'Contract Line',
@@ -87,11 +83,6 @@ class PurchaseLine:
     def __setup__(cls):
         super(PurchaseLine, cls).__setup__()
         cls.unit.on_change.add('contract_line')
-        cls._error_messages.update({
-                'invalid_invoice_method': ('The Purchase "%s" has some line '
-                    'associated to a Purchase Contract but its Invoice Method '
-                    'is not "Based On Shipment".'),
-                })
 
     @classmethod
     def validate(cls, lines):
@@ -103,8 +94,9 @@ class PurchaseLine:
         for line in lines:
             if (line.contract_line
                     and line.purchase.invoice_method != 'shipment'):
-                cls.raise_user_error('invalid_invoice_method',
-                    line.purchase.rec_name)
+                raise UserError(gettext('purchase_contract.'
+                        'msg_invalid_invoice_method',
+                        purchase=line.purchase.rec_name))
 
     def on_change_product(self):
         pool = Pool()

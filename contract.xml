@@ -95,5 +95,25 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_delete" eval="True"/>
         </record>
+
+        <!-- ir.model.button -->
+        <record model="ir.model.button" id="purchase_contract_cancel_button">
+            <field name="name">cancel</field>
+            <field name="string">Cancel</field>
+            <field name="model" search="[('model', '=', 'purchase.contract')]"/>
+        </record>
+        <record model="ir.model.button-res.group" id="purchase_contract_cancel_button_group_purchase">
+            <field name="button" ref="purchase_contract_cancel_button"/>
+            <field name="group" ref="purchase.group_purchase"/>
+        </record>
+        <record model="ir.model.button" id="purchase_contract_active_button">
+            <field name="name">active</field>
+            <field name="string">Active</field>
+            <field name="model" search="[('model', '=', 'purchase.contract')]"/>
+        </record>
+        <record model="ir.model.button-res.group" id="purchase_contract_active_button_group_purchase">
+            <field name="button" ref="purchase_contract_active_button"/>
+            <field name="group" ref="purchase.group_purchase"/>
+        </record>
     </data>
 </tryton>

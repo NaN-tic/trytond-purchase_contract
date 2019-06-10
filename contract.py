@@ -1,6 +1,6 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import ModelView, ModelSQL, Workflow, fields
+from trytond.model import ModelView, ModelSQL, Workflow, fields, Unique
 from trytond.pool import Pool
 from trytond.pyson import Eval
 from trytond.modules.product import price_digits
@@ -148,10 +148,10 @@ class PurchaseContractLine(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(PurchaseContractLine, cls).__setup__()
+        t = cls.__table__()
         cls._sql_constraints += [
-            ('contract_product_uniq', 'unique (contract,product)',
-                'There can not be two lines for the same product in a '
-                'contract.')
+            ('contract_product_uniq', Unique(t, t.contract, t.product),
+                'purchase_contract.msg_contract_product_uniq'),
             ]
 
     def get_rec_name(self, name):
