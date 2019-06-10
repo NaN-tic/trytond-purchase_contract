@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<tryton>
+    <data group="1">
+        <record model="ir.message" id="msg_invalid_invoice_method">
+            <field name="text">The Purchase "%(purchase)s" has some line associated to a Purchase Contract but its Invoice Method is not "Based On Shipment".</field>
+        </record>
+        <record model="ir.message" id="msg_invalid_contract_dates">
+            <field name="text">The date of purchase "%(purchase)s" is not in the period of contract "%(contract)s" selected in line "%(line)s".</field>
+        </record>
+        <record model="ir.message" id="msg_contract_product_uniq">
+            <field name="text">There can not be two lines for the same product in a contract.</field>
+        </record>
+    </data>
+</tryton>
+
