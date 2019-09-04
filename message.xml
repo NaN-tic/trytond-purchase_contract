@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <tryton>
-    <data group="1">
+    <data grouped="1">
         <record model="ir.message" id="msg_invalid_invoice_method">
             <field name="text">The Purchase "%(purchase)s" has some line associated to a Purchase Contract but its Invoice Method is not "Based On Shipment".</field>
         </record>
