@@ -16,7 +16,7 @@
     <group id="buttons" colspan="4">
         <label name="state"/>
         <field name="state"/>
-        <button name="active" string="Active" icon="tryton-forward"/>
-        <button name="cancel" string="Cancel" icon="tryton-cancel"/>
+        <button name="active"/>
+        <button name="cancel"/>
     </group>
 </form>

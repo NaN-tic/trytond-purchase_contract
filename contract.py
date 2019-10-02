@@ -50,9 +50,11 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
         cls._buttons.update({
                 'active': {
                     'invisible': Eval('state') != 'draft',
+                    'icon': 'tryton-forward',
                     },
                 'cancel': {
                     'invisible': Eval('state') != 'active',
+                    'icon': 'tryton-cancel',
                     },
                 })
 
