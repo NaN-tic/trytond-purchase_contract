@@ -79,7 +79,6 @@ Create product::
     >>> template.default_uom = kg
     >>> template.type = 'goods'
     >>> template.purchasable = True
-    >>> template.salable = True
     >>> template.list_price = Decimal('10')
     >>> template.account_category = account_category
     >>> template.save()
@@ -126,12 +125,10 @@ Purchase 5 products with an invoice method 'on shipment'::
     >>> purchase.lines.append(purchase_line)
     >>> purchase_line.product = product
     >>> purchase_line.quantity = 2.0
-    >>> purchase_line.contract = contract
     >>> purchase_line = PurchaseLine()
     >>> purchase.lines.append(purchase_line)
     >>> purchase_line.product = product
     >>> purchase_line.quantity = 3.0
-    >>> purchase_line.contract = contract
     >>> purchase.has_contract_lines
     True
     >>> purchase.click('quote')
@@ -202,7 +199,6 @@ Purchase in diferent uom::
     >>> purchase.lines.append(purchase_line)
     >>> purchase_line.product = product
     >>> purchase_line.quantity = 200.0
-    >>> purchase_line.contract = contract
     >>> purchase_line.unit = g
     >>> purchase.click('quote')
     >>> purchase.click('confirm')
