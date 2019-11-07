@@ -126,7 +126,7 @@ class PurchaseLine(metaclass=PoolMeta):
                 self.unit_price = Uom.compute_price(lines[0].unit,
                     lines[0].agreed_unit_price, self.unit)
 
-    @fields.depends('contract_line')
+    @fields.depends('_parent_contract_line.id', 'contract_line')
     def on_change_quantity(self):
         pool = Pool()
         Uom = pool.get('product.uom')
