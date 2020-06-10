@@ -58,6 +58,10 @@ msgctxt "field:purchase.contract,rec_name:"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "field:purchase.contract,reference:"
+msgid "Reference"
+msgstr "Referència"
+
 msgctxt "field:purchase.contract,start_date:"
 msgid "Start Date"
 msgstr "Data inicial"

@@ -2,45 +2,13 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:purchase.contract.line:"
-msgid "There can not be two lines for the same product in a contract."
-msgstr "No puede haber dos líneas para el mismo producto en un contrato."
-
-msgctxt "error:purchase.line:"
-msgid ""
-"The Purchase \"%s\" has some line associated to a Purchase Contract but its "
-"Invoice Method is not \"Based On Shipment\"."
-msgstr ""
-"La compra \"%s\" tiene alguna línea asociada a un contrato de compra pero su"
-" tipo de facturación no es \"Basado en el envío\"."
-
-msgctxt "error:purchase.purchase:"
-msgid ""
-"The date of purchase \"%(purchase)s\" is not in the period of contract "
-"\"%(contract)s\" selected in line \"%(line)s\"."
-msgstr ""
-"La fecha de la compra \"%(purchase)s\" no se encuentra dentro del período "
-"del contrato \"%(contract)s\" seleccionado en la línea \"%(line)s\"."
-
 msgctxt "field:purchase.contract,contract_type:"
 msgid "Contract quantity"
 msgstr "Cantidad del contrato"
 
-msgctxt "field:purchase.contract,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:purchase.contract,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
 msgctxt "field:purchase.contract,end_date:"
 msgid "End Date"
 msgstr "Fecha final"
-
-msgctxt "field:purchase.contract,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:purchase.contract,invoice_type:"
 msgid "Quantity to invoice"
@@ -54,9 +22,9 @@ msgctxt "field:purchase.contract,party:"
 msgid "Supplier"
 msgstr "Proveedor"
 
-msgctxt "field:purchase.contract,rec_name:"
-msgid "Name"
-msgstr "Nombre"
+msgctxt "field:purchase.contract,reference:"
+msgid "Reference"
+msgstr "Referencia"
 
 msgctxt "field:purchase.contract,start_date:"
 msgid "Start Date"
@@ -65,14 +33,6 @@ msgstr "Fecha inicial"
 msgctxt "field:purchase.contract,state:"
 msgid "State"
 msgstr "Estado"
-
-msgctxt "field:purchase.contract,write_date:"
-msgid "Write Date"
-msgstr "Fecha de modificación"
-
-msgctxt "field:purchase.contract,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
 
 msgctxt "field:purchase.contract.line,agreed_quantity:"
 msgid "Agreed Quantity"
@@ -90,21 +50,9 @@ msgctxt "field:purchase.contract.line,contract:"
 msgid "Contract"
 msgstr "Contrato"
 
-msgctxt "field:purchase.contract.line,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:purchase.contract.line,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
 msgctxt "field:purchase.contract.line,destination_quantity:"
 msgid "Destination Quantity"
 msgstr "Cantidad en destino"
-
-msgctxt "field:purchase.contract.line,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:purchase.contract.line,lines:"
 msgid "Lines"
@@ -122,10 +70,6 @@ msgctxt "field:purchase.contract.line,product:"
 msgid "Product"
 msgstr "Producto"
 
-msgctxt "field:purchase.contract.line,rec_name:"
-msgid "Name"
-msgstr "Nombre"
-
 msgctxt "field:purchase.contract.line,unit:"
 msgid "Unit"
 msgstr "Unidad"
@@ -133,14 +77,6 @@ msgstr "Unidad"
 msgctxt "field:purchase.contract.line,unit_digits:"
 msgid "Unit Digits"
 msgstr "Dígitos unidad"
-
-msgctxt "field:purchase.contract.line,write_date:"
-msgid "Write Date"
-msgstr "Fecha de modificación"
-
-msgctxt "field:purchase.contract.line,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
 
 msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
@@ -181,6 +117,32 @@ msgstr "Contratos"
 msgctxt "model:ir.action.act_window,name:act_purchase_contract"
 msgid "Contracts"
 msgstr "Contratos"
+
+msgctxt "model:ir.message,text:msg_contract_product_uniq"
+msgid "There can not be two lines for the same product in a contract."
+msgstr ""
+
+msgctxt "model:ir.message,text:msg_invalid_contract_dates"
+msgid ""
+"The date of purchase \"%(purchase)s\" is not in the period of contract "
+"\"%(contract)s\" selected in line \"%(line)s\"."
+msgstr ""
+
+msgctxt "model:ir.message,text:msg_invalid_invoice_method"
+msgid ""
+"The Purchase \"%(purchase)s\" has some line associated to a Purchase "
+"Contract but its Invoice Method is not \"Based On Shipment\"."
+msgstr ""
+
+#, fuzzy
+msgctxt "model:ir.model.button,string:purchase_contract_active_button"
+msgid "Active"
+msgstr "Activo"
+
+#, fuzzy
+msgctxt "model:ir.model.button,string:purchase_contract_cancel_button"
+msgid "Cancel"
+msgstr "Cancel·lar"
 
 msgctxt "model:ir.ui.menu,name:menu_purchase_contracts"
 msgid "Contracts"
@@ -227,20 +189,12 @@ msgid "Draft"
 msgstr "Borrador"
 
 msgctxt "view:purchase.contract.line:"
-msgid "Contract Line"
-msgstr "Linea contrato"
-
-msgctxt "view:purchase.contract.line:"
 msgid "General"
 msgstr "General"
 
 msgctxt "view:purchase.contract.line:"
 msgid "Moves"
 msgstr "Movimientos"
-
-msgctxt "view:purchase.contract.line:"
-msgid "Purchase Contract Line"
-msgstr "Linia de contrato de compra"
 
 msgctxt "view:purchase.contract:"
 msgid "Active"

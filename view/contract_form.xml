@@ -3,7 +3,9 @@
      copyright notices and license terms. -->
 <form>
     <label name="party"/>
-    <field name="party" colspan="3"/>
+    <field name="party"/>
+    <label name="reference"/>
+    <field name="reference"/>
     <label name="contract_type"/>
     <field name="contract_type"/>
     <label name="invoice_type"/>
