@@ -18,6 +18,7 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
     'Purchase Contract'
     __name__ = 'purchase.contract'
 
+    reference = fields.Char('Reference')
     state = fields.Selection([
             ('draft', 'Draft'),
             ('active', 'Active'),
