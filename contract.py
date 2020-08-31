@@ -3,6 +3,7 @@
 from trytond.model import ModelView, ModelSQL, Workflow, fields, Unique
 from trytond.pool import Pool
 from trytond.pyson import Eval
+from trytond.transaction import Transaction
 from trytond.modules.product import price_digits
 
 __all__ = ['PurchaseContract', 'PurchaseContractLine']
@@ -22,7 +23,7 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
     state = fields.Selection([
             ('draft', 'Draft'),
             ('active', 'Active'),
-            ('cancel', 'Canceled'),
+            ('cancelled', "Cancelled"),
             ], 'State', readonly=True, required=True)
     party = fields.Many2One('party.party', 'Supplier', required=True,
         states=_STATES, depends=_DEPENDS)
@@ -46,7 +47,7 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
         super(PurchaseContract, cls).__setup__()
         cls._transitions |= set((
                 ('draft', 'active'),
-                ('active', 'cancel'),
+                ('active', 'cancelled'),
                 ))
         cls._buttons.update({
                 'active': {
@@ -58,6 +59,18 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
                     'icon': 'tryton-cancel',
                     },
                 })
+
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().connection.cursor()
+        sql_table = cls.__table__()
+
+        super(PurchaseContract, cls).__register__(module_name)
+
+        # Migration from 5.6: rename state cancel to cancelled
+        cursor.execute(*sql_table.update(
+                [sql_table.state], ['cancelled'],
+                where=sql_table.state == 'cancel'))
 
     @classmethod
     def copy(cls, contracts, default=None):
@@ -110,7 +123,7 @@ class PurchaseContract(Workflow, ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
-    @Workflow.transition('cancel')
+    @Workflow.transition('cancelled')
     def cancel(cls, contracts):
         Date = Pool().get('ir.date')
         cancels = [c for c in contracts if not c.end_date]
@@ -192,7 +205,7 @@ class PurchaseContractLine(ModelSQL, ModelView):
         for line in self.lines:
             if line.purchase.state in ['processing', 'done']:
                 moves.extend([m.id for m in line.moves
-                        if m.state not in ('draft' 'cancel')])
+                        if m.state not in ('draft' 'cancelled')])
         return moves
 
     @classmethod
