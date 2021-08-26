@@ -140,26 +140,19 @@ class PurchaseContractLine(ModelSQL, ModelView):
         domain=[('purchasable', '=', True)])
     unit = fields.Function(fields.Many2One('product.uom', 'Unit'),
         'on_change_with_unit')
-    unit_digits = fields.Function(fields.Integer('Unit Digits'),
-        'on_change_with_unit_digits')
-    agreed_quantity = fields.Float('Agreed Quantity',
-        digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
+    agreed_quantity = fields.Float('Agreed Quantity', digits='unit')
     agreed_unit_price = fields.Numeric('Agreed Unit Price',
         digits=price_digits, required=True)
     lines = fields.One2Many('purchase.line', 'contract_line',
         'Lines', readonly=True)
     moves = fields.Function(fields.One2Many('stock.move', None, 'Moves',
-            readonly=True),
-        'get_moves')
+        readonly=True), 'get_moves')
     origin_quantity = fields.Function(fields.Float('Origin Quantity',
-            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits']),
-        'get_quantities')
+        digits='unit'), 'get_quantities')
     destination_quantity = fields.Function(fields.Float('Destination Quantity',
-            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits']),
-        'get_quantities')
+        digits='unit'), 'get_quantities')
     consumed_quantity = fields.Function(fields.Float('Consumed Quantity',
-            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits']),
-        'get_quantities')
+        digits='unit'), 'get_quantities')
 
     @classmethod
     def __setup__(cls):
@@ -189,12 +182,6 @@ class PurchaseContractLine(ModelSQL, ModelView):
         if self.product:
             return self.product.purchase_uom.id
         return None
-
-    @fields.depends('unit')
-    def on_change_with_unit_digits(self, name=None):
-        if self.unit:
-            return self.unit.digits
-        return 2
 
     @fields.depends('product')
     def on_change_with_agreed_unit_price(self):

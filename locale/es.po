@@ -74,10 +74,6 @@ msgctxt "field:purchase.contract.line,unit:"
 msgid "Unit"
 msgstr "Unidad"
 
-msgctxt "field:purchase.contract.line,unit_digits:"
-msgid "Unit Digits"
-msgstr "Dígitos unidad"
-
 msgctxt "field:purchase.line,contract_line:"
 msgid "Contract Line"
 msgstr "Linea contrato"
@@ -93,10 +89,6 @@ msgstr "Cantidad origen"
 msgctxt "field:stock.move,origin_quantity_required:"
 msgid "Origin Quantity Required"
 msgstr "Cantidad en el origen requerida"
-
-msgctxt "field:stock.move,origin_unit_digits:"
-msgid "Origin Unit Digits"
-msgstr "Digitos unidad origen"
 
 msgctxt "field:stock.move,origin_uom:"
 msgid "Origin Uom"

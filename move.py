@@ -25,12 +25,10 @@ class Move(metaclass=PoolMeta):
             ('category', '=', Eval('product_uom_category')),
             ], states=ORIGIN_STATES,
         depends=['product_uom_category', 'state', 'origin_quantity_required'])
-    origin_unit_digits = fields.Function(fields.Integer('Origin Unit Digits'),
-        'on_change_with_origin_unit_digits')
     origin_quantity = fields.Float("Origin Quantity",
-        digits=(16, Eval('origin_unit_digits', 2)),
+        digits='origin_uom',
         states=ORIGIN_STATES,
-        depends=['origin_unit_digits', 'state', 'origin_quantity_required'])
+        depends=['state', 'origin_quantity_required'])
 
     def get_origin_quantity_required(self, name):
         PurchaseLine = Pool().get('purchase.line')
@@ -47,17 +45,9 @@ class Move(metaclass=PoolMeta):
         if self.product:
             return self.product.default_uom.id
 
-    @fields.depends('origin_uom')
-    def on_change_with_origin_unit_digits(self, name=None):
-        if self.origin_uom:
-            return self.origin_uom.digits
-        return 2
-
     def on_change_product(self):
         super().on_change_product()
-        for field in ['uom', 'unit_digits']:
-            value = getattr(self, field, None)
-            setattr(self, "origin_%s" % field, value)
+        self.origin_uom = self.uom
 
     @fields.depends('uom')
     def on_change_uom(self):
