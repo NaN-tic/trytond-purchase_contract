@@ -24,7 +24,7 @@ class Purchase(metaclass=PoolMeta):
         else:
             cls.purchase_date.states['required'] = Eval('has_contract_lines',
                 False)
-        cls.purchase_date.depends.append('has_contract_lines')
+        cls.purchase_date.depends.add('has_contract_lines')
 
     @fields.depends('lines')
     def on_change_with_has_contract_lines(self, name=None):
